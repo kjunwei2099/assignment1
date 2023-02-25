@@ -52,11 +52,13 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel27" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel25" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel28" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel29" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel30" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -64,10 +66,11 @@
                                   <Component id="txtAdminPassword" alignment="0" min="-2" pref="227" max="-2" attributes="0"/>
                                   <Component id="txtAdminPassword2" alignment="0" min="-2" pref="227" max="-2" attributes="0"/>
                                   <Component id="txtAdminContact" alignment="0" min="-2" pref="227" max="-2" attributes="0"/>
+                                  <Component id="comboAdminRole" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="174" max="-2" attributes="0"/>
                               <Component id="btnAdminSave" min="-2" pref="90" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
                               <Component id="btnAdminClear" min="-2" pref="90" max="-2" attributes="0"/>
@@ -75,7 +78,7 @@
                               <Component id="btnAdminDelete" min="-2" pref="90" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="367" max="32767" attributes="0"/>
+                      <EmptySpace pref="289" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="txtAdminSearch" max="32767" attributes="0"/>
@@ -88,7 +91,7 @@
                                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel13" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="comboAdminRole" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="comboAdminSearchRole" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="jScrollPane6" min="-2" pref="315" max="-2" attributes="0"/>
@@ -110,12 +113,21 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="comboAdminRole" min="-2" max="-2" attributes="0"/>
+                              <Component id="comboAdminSearchRole" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnAdminSearch" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtAdminSearch" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jScrollPane6" min="-2" pref="272" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel27" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtAdminUsername" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -135,21 +147,17 @@
                                   <Component id="jLabel29" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtAdminContact" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel30" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="comboAdminRole" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnAdminSave" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnAdminClear" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnAdminDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="btnAdminSearch" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtAdminSearch" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jScrollPane6" min="-2" pref="272" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="43" max="32767" attributes="0"/>
@@ -163,7 +171,7 @@
                 <Property name="text" type="java.lang.String" value="Filter By"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="comboAdminRole">
+            <Component class="javax.swing.JComboBox" name="comboAdminSearchRole">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="4">
@@ -280,6 +288,29 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAdminDeleteActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel30">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Contact Number: "/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="comboAdminRole">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="4">
+                    <StringItem index="0" value="Administator"/>
+                    <StringItem index="1" value="Delivery Staff"/>
+                    <StringItem index="2" value="Customer"/>
+                    <StringItem index="3" value=" "/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboAdminRoleActionPerformed"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

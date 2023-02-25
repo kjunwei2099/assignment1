@@ -1,7 +1,11 @@
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -45,14 +49,19 @@ public class jDelivery extends javax.swing.JFrame {
         btnLoadTable = new javax.swing.JButton();
         btnUpdateDeliveryStatus = new javax.swing.JButton();
         lblStatus = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
         lblWelcome = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        lblFeedback = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
+        comboDelivery = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        btnShowFeedback = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        comboFeedback = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,7 +70,7 @@ public class jDelivery extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Order ID", "Delivery Status", "Item Name", "Quantity", "cName", "cAddress", "cPostcode", "cCity", "cState"
+                "Order ID", "Delivery Status", "Item Name", "Quantity", "cFeedback", "cName", "cAddress", "cPostcode", "cCity", "cState"
             }
         ));
         jScrollPane1.setViewportView(tableCustomerOrder);
@@ -82,14 +91,6 @@ public class jDelivery extends javax.swing.JFrame {
 
         lblStatus.setText("Status :");
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText("Packing Item");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
-            }
-        });
-
         buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("Out for delivery");
 
@@ -109,6 +110,23 @@ public class jDelivery extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Order ID");
+
+        btnShowFeedback.setText("Show Feedback");
+        btnShowFeedback.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowFeedbackActionPerformed(evt);
+            }
+        });
+
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSearchKeyPressed(evt);
+            }
+        });
+
+        jLabel2.setText("Search Field");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -116,29 +134,47 @@ public class jDelivery extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jRadioButton2)
-                                    .addComponent(jRadioButton1)
-                                    .addComponent(jRadioButton3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnUpdateDeliveryStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLoadTable))
                     .addComponent(lblStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblWelcome)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLogout))
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(comboDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(15, 15, 15)
+                                        .addComponent(jLabel5))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jRadioButton3)
+                                            .addComponent(jRadioButton2)))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(63, 63, 63)
+                                .addComponent(btnUpdateDeliveryStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(345, 345, 345)
+                                .addComponent(btnLoadTable))
+                            .addComponent(lblFeedback, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(comboFeedback, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnShowFeedback))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -148,31 +184,41 @@ public class jDelivery extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblWelcome)
                     .addComponent(btnLogout))
-                .addGap(72, 72, 72)
+                .addGap(4, 4, 4)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnLoadTable)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(9, 9, 9)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel5))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(58, 58, 58)
-                                .addComponent(btnUpdateDeliveryStatus))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jRadioButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jRadioButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jRadioButton3))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel1)))
+                        .addGap(9, 9, 9)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jRadioButton2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdateDeliveryStatus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnLoadTable)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 28, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnShowFeedback)
+                            .addComponent(comboFeedback, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblFeedback, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addComponent(lblStatus)
                 .addContainerGap())
         );
@@ -212,79 +258,108 @@ public class jDelivery extends javax.swing.JFrame {
             String isPaid = sc.next();
             String deliveryStaff = sc.next();
             String deliveryStatus = sc.next();
+            String haveFeedback = sc.next();
             if(!deliveryStatus.equals("null"))
             {
                 for(int x = 0;x<lines.size();x++)
                 {
                     Scanner sc2 = new Scanner(lines.get(x)).useDelimiter(";");
-                    String tempRole = sc2.next();
+                    sc2.next();
                     String username = sc2.next();
-                    if(tempUsername.equals(username)&&tempRole.equals("customer"))
+                    if(tempUsername.equals(username))
                     {
                         String password = sc2.next();
                         String address = sc2.next();
                         String postcode = sc2.next();
                         String city = sc2.next();
                         String state = sc2.next();
-                        objModel.addRow(new Object[]{orderID,deliveryStatus,tempItemName,tempItemQuantity,username,address,postcode,city,state});
+                        objModel.addRow(new Object[]{orderID,deliveryStatus,tempItemName,tempItemQuantity,haveFeedback,username,address,postcode,city,state});
+                        comboDelivery.addItem(orderID);
+                        if(haveFeedback.equals("yes"))
+                        {
+                            comboFeedback.addItem(orderID);
+                        }
                     }
                 }
             }
         }
+        try
+        {
+            Set<String> seenValues = new HashSet<String>();
+            for(int i=0;i<comboDelivery.getItemCount();i++)
+            {
+                String currentValue = comboDelivery.getItemAt(i);
+                if (seenValues.contains(currentValue)) {
+                    // If the value has already been seen, remove it from the combo box
+                    comboDelivery.removeItemAt(i);
+                    i--; // Decrement the index to account for the removed element
+                } else {
+                    // Otherwise, add the value to the set of seen values
+                    seenValues.add(currentValue);
+                }
+            }
+        }catch(Exception e){}
+        try
+        {
+            Set<String> seenValues = new HashSet<String>();
+            for(int i=0;i<comboFeedback.getItemCount();i++)
+            {
+                String currentValue = comboFeedback.getItemAt(i);
+                if (seenValues.contains(currentValue)) {
+                    // If the value has already been seen, remove it from the combo box
+                    comboFeedback.removeItemAt(i);
+                    i--; // Decrement the index to account for the removed element
+                } else {
+                    // Otherwise, add the value to the set of seen values
+                    seenValues.add(currentValue);
+                }
+            }
+        }catch(Exception e){}
     }//GEN-LAST:event_btnLoadTableActionPerformed
-
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void btnUpdateDeliveryStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateDeliveryStatusActionPerformed
         String tempStatus = "";
         DefaultTableModel objModel = (DefaultTableModel) tableCustomerOrder.getModel();
-        int row = tableCustomerOrder.getSelectedRow();
-        if(row>=0)
+        if(jRadioButton2.isSelected()||jRadioButton3.isSelected())
         {
-            if(jRadioButton1.isSelected()||jRadioButton2.isSelected()||jRadioButton3.isSelected())
+            if(jRadioButton2.isSelected())
             {
-                if(jRadioButton1.isSelected())
-                {
-                    tempStatus="Packing Item";
-                }
-                else if(jRadioButton2.isSelected())
-                {
-                    tempStatus="Out for delivery";
-                }
-                else if(jRadioButton3.isSelected())
-                {
-                    tempStatus="Delivered";
-                }
-                objModel.setValueAt(tempStatus, row, 1);
-                String orderID = objModel.getValueAt(row,0).toString();
-                cFileHandling f = new cFileHandling();
-                ArrayList<String> orderList = cFileHandling.readFile("order.txt");
-                for(int i=0;i<orderList.size();i++)
-                {
-                    Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-                    String tempOrderID = sc.next();
-                    if(orderID.equals(tempOrderID))
-                    {
-                        orderList.set(i, tempOrderID+";"+sc.next()+";"+sc.next()+";"+sc.next()+";"+sc.next()+";"+sc.next()+";"+sc.next()+";"+sc.next()+";"+sc.next()+";"+"deliverStaffName"+";"+tempStatus);
-                    }
-                }
-                for(String eachString: orderList)
-                    {
-                        f.newList(eachString); 
-                    }
-                f.saveListToFile("order.txt");
-                lblStatus.setText("Status : Delivery Status updated!");
+                tempStatus="Out for delivery";
             }
-            else
+            else if(jRadioButton3.isSelected())
             {
-                lblStatus.setText("Status : Please select one status to update !");
+                tempStatus="Delivered";
             }
-        } 
+            cFileHandling f = new cFileHandling();
+            ArrayList<String> orderList = cFileHandling.readFile("order.txt");
+            for(int i=0;i<orderList.size();i++)
+            {
+                Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
+                String tempOrderID = sc.next();
+                if(tempOrderID.equals(comboDelivery.getSelectedItem()))
+                {
+                    String tempDate=sc.next(),tempTime=sc.next(),tempUsername=sc.next(),tempItem=sc.next(),tempPrice=sc.next(),tempQuantity=sc.next(),tempAmount=sc.next(),tempIsPaid=sc.next(),tempDeliveryStaff=sc.next(),tempDeliveryStatus=sc.next(),tempHasFeedback=sc.next(),tempFeedback=sc.next();
+                    orderList.set(i, tempOrderID+";"+tempDate+";"+tempTime+";"+tempUsername+";"+tempItem+";"+tempPrice+";"+tempQuantity+";"+tempAmount+";"+tempIsPaid+";"+"deliverStaffName"+";"+tempStatus+";"+tempHasFeedback+";"+tempFeedback);
+                }
+                for(int x=0;x<tableCustomerOrder.getRowCount();x++)
+                {
+                    String orderID = objModel.getValueAt(x,0).toString();
+                    if(orderID.equals(comboDelivery.getSelectedItem()))
+                    {
+                        objModel.setValueAt(tempStatus, x, 1);
+                    } 
+                }
+            }
+            for(String eachString: orderList)
+            {
+                f.newList(eachString); 
+            }
+            f.saveListToFile("order.txt");
+            lblStatus.setText("Status : Delivery Status updated!");
+        }
         else
         {
-            lblStatus.setText("Status : Please select one order to update");
+            lblStatus.setText("Status : Please select one status to update!");
         }
     }//GEN-LAST:event_btnUpdateDeliveryStatusActionPerformed
 
@@ -294,6 +369,32 @@ public class jDelivery extends javax.swing.JFrame {
         jDashboard d = new jDashboard();
         d.setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnShowFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowFeedbackActionPerformed
+        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
+        String tempOrderID = comboFeedback.getSelectedItem().toString();
+        for(int i=0;i<orderList.size();i++)
+        {
+            Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
+            String orderID = sc.next();
+            sc.next();sc.next();sc.next();sc.next();sc.next();sc.next();
+            sc.next();sc.next();sc.next();sc.next();
+            String haveFeedback = sc.next();
+            String feedback = sc.next();
+            if(haveFeedback.equals("yes")&&orderID.equals(tempOrderID))
+            {
+                lblFeedback.setText(feedback);                
+            }
+        }
+        lblStatus.setText("Status : Feedback showed");
+    }//GEN-LAST:event_btnShowFeedbackActionPerformed
+
+    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
+        DefaultTableModel table = (DefaultTableModel) tableCustomerOrder.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table);
+        tableCustomerOrder.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(txtSearch.getText().trim()));
+    }//GEN-LAST:event_txtSearchKeyPressed
 
     /**
      * @param args the command line arguments
@@ -333,18 +434,23 @@ public class jDelivery extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLoadTable;
     private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnShowFeedback;
     private javax.swing.JButton btnUpdateDeliveryStatus;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox<String> comboDelivery;
+    private javax.swing.JComboBox<String> comboFeedback;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblFeedback;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JTable tableCustomerOrder;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

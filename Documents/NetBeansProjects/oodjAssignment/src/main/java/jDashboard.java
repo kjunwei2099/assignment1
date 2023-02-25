@@ -10,6 +10,14 @@ import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -32,7 +40,7 @@ public class jDashboard extends javax.swing.JFrame {
      */
     public jDashboard() {
         initComponents();
-        configuration();        
+        configuration();     
     }
     
     public void setRole(String role){
@@ -49,7 +57,9 @@ public class jDashboard extends javax.swing.JFrame {
             jTabbedPane1.add("Cart",panelCart);
             jTabbedPane1.add("Order History",panelHistory); 
             jTabbedPane1.add("Profile",panelProfile);
-            
+            lblWelcome.setText("Welcome Back "+username+"!");
+            btnCartRefreshTable.doClick();
+            btnPurchaseHistoryRefresh.doClick();
             ArrayList<String> lines = cFileHandling.readFile("userInfo.txt");
             for (String eachString: lines){
                 Scanner sc = new Scanner(eachString).useDelimiter(";");
@@ -87,6 +97,7 @@ public class jDashboard extends javax.swing.JFrame {
             jTabbedPane1.remove(panelHistory); 
             jTabbedPane1.remove(panelProfile); 
         }
+        btnShopLoadTable.doClick();
     }
     
     /**
@@ -102,25 +113,15 @@ public class jDashboard extends javax.swing.JFrame {
         panelShop = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableShop = new javax.swing.JTable();
-        comboCategory = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        comboName = new javax.swing.JComboBox<>();
-        comboPrice = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
         txtShopSearch = new javax.swing.JTextField();
-        btnShopSearch = new javax.swing.JToggleButton();
         btnShopCart = new javax.swing.JButton();
-        lblShopItemName = new javax.swing.JLabel();
-        lblShopPrice = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         btnShopLoadTable = new javax.swing.JButton();
         lblShopStatus = new javax.swing.JLabel();
-        btnShopGetItem = new javax.swing.JButton();
         spinnerShopQuantity = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        lblWelcome = new javax.swing.JLabel();
         panelCart = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableCart = new javax.swing.JTable();
@@ -128,17 +129,12 @@ public class jDashboard extends javax.swing.JFrame {
         btnCartPay = new javax.swing.JButton();
         btnCartRemove = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        label123 = new javax.swing.JLabel();
         spinnerCartQuantity = new javax.swing.JSpinner();
         btnCartRefreshTable = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         btnCartEdit = new javax.swing.JButton();
-        lblCartPrice = new javax.swing.JLabel();
-        lblCartTotalItem = new javax.swing.JLabel();
         lblCartStatus = new javax.swing.JLabel();
-        btnCartGetItem = new javax.swing.JButton();
         lblCartItemName = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         panelHistory = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tablePurchaseHistory = new javax.swing.JTable();
@@ -146,7 +142,11 @@ public class jDashboard extends javax.swing.JFrame {
         btnPurchaseHistoryRefresh = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtFeedback = new javax.swing.JTextArea();
+        comboSelectID = new javax.swing.JComboBox<>();
+        jLabel11 = new javax.swing.JLabel();
+        btnSubmitFeedback = new javax.swing.JButton();
+        lblFeedbackStatus = new javax.swing.JLabel();
         panelProfile = new javax.swing.JPanel();
         btnProfileLogout = new javax.swing.JButton();
         btnProfileEdit = new javax.swing.JButton();
@@ -178,30 +178,29 @@ public class jDashboard extends javax.swing.JFrame {
             new String [] {
                 "Category Name", "Item Name", "Price", "Stock Left"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tableShop);
 
-        comboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel1.setText("Filter By");
-
-        jLabel2.setText("Category");
-
-        jLabel3.setText("Name (ASC / DECS)");
-
-        comboName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        comboPrice.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel4.setText("Price (ASC /DESC)");
 
         txtShopSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtShopSearchActionPerformed(evt);
             }
         });
-
-        btnShopSearch.setText("Search");
+        txtShopSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtShopSearchKeyPressed(evt);
+            }
+        });
 
         btnShopCart.setText("Add to Cart");
         btnShopCart.addActionListener(new java.awt.event.ActionListener() {
@@ -221,18 +220,11 @@ public class jDashboard extends javax.swing.JFrame {
 
         lblShopStatus.setText("Status: ");
 
-        btnShopGetItem.setText("Get Item");
-        btnShopGetItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnShopGetItemActionPerformed(evt);
-            }
-        });
-
         spinnerShopQuantity.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
-        jLabel6.setText("Item Price : RM");
+        jLabel6.setText("Search Item");
 
-        jLabel7.setText("Item Name :");
+        lblWelcome.setText("Welcome Back!");
 
         javax.swing.GroupLayout panelShopLayout = new javax.swing.GroupLayout(panelShop);
         panelShop.setLayout(panelShopLayout);
@@ -241,104 +233,56 @@ public class jDashboard extends javax.swing.JFrame {
             .addGroup(panelShopLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelShopLayout.createSequentialGroup()
+                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)))
                     .addComponent(jScrollPane1)
                     .addGroup(panelShopLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(26, 26, 26)
+                        .addGap(9, 9, 9)
                         .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelShopLayout.createSequentialGroup()
-                                .addComponent(comboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(53, 53, 53)
-                                .addComponent(comboName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelShopLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(46, 46, 46)
-                                .addComponent(jLabel3)))
-                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelShopLayout.createSequentialGroup()
-                                .addGap(51, 51, 51)
-                                .addComponent(comboPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelShopLayout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(jLabel4)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnShopSearch))
-                    .addGroup(panelShopLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblShopStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 1258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 26, Short.MAX_VALUE))
                             .addGroup(panelShopLayout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addGap(18, 18, 18)
                                 .addComponent(spinnerShopQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(440, 440, 440))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelShopLayout.createSequentialGroup()
-                                .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(panelShopLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblShopPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelShopLayout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblShopItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnShopGetItem)))
-                                .addGap(16, 16, 16)))
-                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelShopLayout.createSequentialGroup()
-                                .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnShopCart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnShopLoadTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(0, 590, Short.MAX_VALUE))
-                            .addComponent(lblShopStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnShopCart)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnShopLoadTable, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         panelShopLayout.setVerticalGroup(
             panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelShopLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelShopLayout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(comboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(comboName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(comboPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnShopSearch))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelShopLayout.createSequentialGroup()
-                                .addComponent(txtShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10))))
+                        .addComponent(jLabel6)
+                        .addGap(2, 2, 2)
+                        .addComponent(txtShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelShopLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
+                        .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblShopItemName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnShopLoadTable)
-                        .addComponent(btnShopGetItem)
-                        .addComponent(jLabel7)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblShopPrice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelShopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnShopCart)
-                    .addComponent(jLabel8)
-                    .addComponent(spinnerShopQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                        .addComponent(btnShopCart)
+                        .addComponent(jLabel8)
+                        .addComponent(spinnerShopQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnShopLoadTable))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                 .addComponent(lblShopStatus)
-                .addGap(29, 29, 29))
+                .addGap(34, 34, 34))
         );
 
         jTabbedPane1.addTab("Shop", panelShop);
@@ -348,11 +292,11 @@ public class jDashboard extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Cart ID", "Item Name", "Price", "Quantity", "Total Price"
+                "Item Name", "Price", "Quantity", "Total Price"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -379,8 +323,6 @@ public class jDashboard extends javax.swing.JFrame {
 
         jLabel5.setText("Edit Quantity");
 
-        label123.setText("Item Name : ");
-
         spinnerCartQuantity.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
         btnCartRefreshTable.setText("Refresh");
@@ -397,18 +339,7 @@ public class jDashboard extends javax.swing.JFrame {
             }
         });
 
-        lblCartTotalItem.setText("Total Items :");
-
         lblCartStatus.setText("Status :");
-
-        btnCartGetItem.setText("Get Item");
-        btnCartGetItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCartGetItemActionPerformed(evt);
-            }
-        });
-
-        jLabel9.setText("Price : RM");
 
         javax.swing.GroupLayout panelCartLayout = new javax.swing.GroupLayout(panelCart);
         panelCart.setLayout(panelCartLayout);
@@ -425,38 +356,28 @@ public class jDashboard extends javax.swing.JFrame {
                                 .addGap(12, 12, 12)
                                 .addComponent(jLabel12)
                                 .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(panelCartLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(spinnerCartQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCartItemName, javax.swing.GroupLayout.DEFAULT_SIZE, 9, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCartEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1069, 1069, 1069))
+                    .addGroup(panelCartLayout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(lblCartStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 663, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCartLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCartRemove)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCartRefreshTable))
-                    .addGroup(panelCartLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
                         .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelCartLayout.createSequentialGroup()
-                                .addComponent(lblCartStatus)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnCartPay, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelCartLayout.createSequentialGroup()
-                                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(label123, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel5)
-                                    .addComponent(btnCartGetItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCartLayout.createSequentialGroup()
+                                .addComponent(btnCartRemove)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelCartLayout.createSequentialGroup()
-                                        .addComponent(lblCartItemName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblCartTotalItem, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelCartLayout.createSequentialGroup()
-                                        .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(spinnerCartQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnCartEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(301, 301, 301)
-                                        .addComponent(jLabel9)
-                                        .addGap(259, 259, 259)
-                                        .addComponent(lblCartPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))))))
+                                .addComponent(btnCartRefreshTable))
+                            .addComponent(btnCartPay, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         panelCartLayout.setVerticalGroup(
@@ -470,32 +391,27 @@ public class jDashboard extends javax.swing.JFrame {
                 .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCartRefreshTable)
                     .addComponent(btnCartRemove))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblCartTotalItem)
-                    .addComponent(lblCartItemName, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-                    .addComponent(label123))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblCartPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5)
-                        .addComponent(spinnerCartQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel9)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCartEdit)
-                    .addComponent(btnCartGetItem))
-                .addGap(38, 38, 38)
-                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCartLayout.createSequentialGroup()
+                    .addGroup(panelCartLayout.createSequentialGroup()
+                        .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblCartItemName, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                            .addGroup(panelCartLayout.createSequentialGroup()
+                                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(spinnerCartQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel5))
+                                    .addComponent(btnCartEdit))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(75, 75, 75)
                         .addComponent(btnCartPay)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCartLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(lblCartStatus)
-                        .addGap(34, 34, 34))))
+                        .addGap(46, 46, 46))))
         );
 
         jTabbedPane1.addTab("Cart", panelCart);
@@ -507,7 +423,15 @@ public class jDashboard extends javax.swing.JFrame {
             new String [] {
                 "Date", "Order ID", "Item Name", "Price", "Quantity", "Total Price", "Delivery Status"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane3.setViewportView(tablePurchaseHistory);
 
         jLabel14.setText("Purchased History");
@@ -521,49 +445,88 @@ public class jDashboard extends javax.swing.JFrame {
 
         jLabel10.setText("Feedback");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane4.setViewportView(jTextArea1);
+        txtFeedback.setColumns(20);
+        txtFeedback.setRows(5);
+        jScrollPane4.setViewportView(txtFeedback);
+
+        jLabel11.setText("Select Order ID to give feedback");
+
+        btnSubmitFeedback.setText("Submit");
+        btnSubmitFeedback.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitFeedbackActionPerformed(evt);
+            }
+        });
+
+        lblFeedbackStatus.setText("Status :");
 
         javax.swing.GroupLayout panelHistoryLayout = new javax.swing.GroupLayout(panelHistory);
         panelHistory.setLayout(panelHistoryLayout);
         panelHistoryLayout.setHorizontalGroup(
             panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelHistoryLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jLabel14)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHistoryLayout.createSequentialGroup()
-                .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelHistoryLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1293, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelHistoryLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
                         .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1293, Short.MAX_VALUE)
                             .addGroup(panelHistoryLayout.createSequentialGroup()
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(2, 2, 2)
+                                .addComponent(jLabel11)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(comboSelectID, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(961, 961, 961)
+                                .addComponent(btnPurchaseHistoryRefresh))
                             .addGroup(panelHistoryLayout.createSequentialGroup()
                                 .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnPurchaseHistoryRefresh)))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                        .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelHistoryLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel14))
+                            .addGroup(panelHistoryLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnSubmitFeedback))
+                                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                                        .addGap(148, 148, 148)
+                                        .addComponent(lblFeedbackStatus)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelHistoryLayout.setVerticalGroup(
             panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelHistoryLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHistoryLayout.createSequentialGroup()
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnPurchaseHistoryRefresh)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblFeedbackStatus))
+                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                        .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelHistoryLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPurchaseHistoryRefresh)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHistoryLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(comboSelectID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11))
+                                .addGap(18, 18, 18)))
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSubmitFeedback))))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Purchase History", panelHistory);
@@ -745,30 +708,64 @@ public class jDashboard extends javax.swing.JFrame {
             int response = JOptionPane.showConfirmDialog(this, "Confirm to delete the selected row?", "Confirm",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(response==JOptionPane.YES_OPTION)
             {
-                ArrayList<String> lines = cFileHandling.readFile("order.txt");
-                String orderID = objModel.getValueAt(row, 0).toString();
-                for(int i=0; i<lines.size();i++)
+                boolean canEdit = false;
+                ArrayList<String> orderList = cFileHandling.readFile("order.txt");
+                ArrayList<String> itemList = cFileHandling.readFile("item.txt");
+                String itemName = objModel.getValueAt(row, 0).toString();
+                String itemQuantity = objModel.getValueAt(row, 2).toString();
+                for(int i=0; i<orderList.size();i++)
                 {
-                    Scanner sc = new Scanner(lines.get(i)).useDelimiter(";");
-                    String tempOrderID = sc.next();
-                    if(tempOrderID.equals(orderID))
+                    Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
+                    sc.next();sc.next();sc.next();
+                    String tempOrderUsername = sc.next();
+                    String tempOrderItemName = sc.next();
+                    sc.next();
+                    String tempOrderItemQuantity = sc.next();
+                    sc.next();
+                    String tempIsPaid = sc.next();
+                    
+                    if(itemName.equals(tempOrderItemName)&&username.equals(tempOrderUsername)&&tempIsPaid.equals("unpaid"))
                     {
-                        lines.remove(i);
+                        for(int x=0;x<itemList.size();x++)
+                        {
+                            Scanner sc2 = new Scanner(itemList.get(x)).useDelimiter(";");
+                            String tempItemItemCategory =sc2.next();
+                            String tempItemItemName = sc2.next();
+                            String tempItemItemPrice=sc2.next();
+                            String tempItemItemQuantity=sc2.next();
+                            if(tempOrderItemName.equals(tempItemItemName))
+                            {
+                                int qItemQuantity = Integer.parseInt(tempItemItemQuantity.replaceAll("[^0-9.]",""));
+                                int qOrderQuantity = Integer.parseInt(tempOrderItemQuantity);
+                                int finalQuantity = qItemQuantity+qOrderQuantity;
+                                itemList.set(x, tempItemItemCategory+";"+tempItemItemName+";"+tempItemItemPrice+";"+finalQuantity);
+                                canEdit=true;
+                            }
+                        }
+                        orderList.remove(i);
+                        lblCartStatus.setText("Status : Item removed from cart!");
                     }
                 } 
-                cFileHandling f = new cFileHandling();
-                for(String eachString: lines)
+                if(canEdit)
                 {
-                    System.out.println(eachString);
-                    f.newList(eachString);
-                }
-                f.saveListToFile("order.txt");
-                objModel.removeRow(row);
+                    cFileHandling f = new cFileHandling();
+                    for(String eachString: orderList)
+                    {
+                        f.newList(eachString);
+                    }
+                    f.saveListToFile("order.txt");
+                    for(String eachString: itemList)
+                    {
+                        f.newList(eachString);
+                    }
+                    f.saveListToFile("item.txt");
+                    objModel.removeRow(row);
+                } 
             }
         }
         else
         {
-            lblCartStatus.setText("No Row Selected");
+            lblCartStatus.setText("Status : No Row Selected");
         }
     }//GEN-LAST:event_btnCartRemoveActionPerformed
 
@@ -808,7 +805,9 @@ public class jDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProfileEditActionPerformed
 
     private void btnShopCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopCartActionPerformed
-        boolean canCart=false;
+        DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
+        int selectedViewIndex = tableShop.getSelectedRow();
+        int row = tableShop.convertRowIndexToModel(selectedViewIndex);
         if(!role.equals("customer"))
         {
             if(JOptionPane.showConfirmDialog(null,"Login to Continue?", "Please Login to Cart", JOptionPane.PLAIN_MESSAGE)==0)
@@ -820,105 +819,73 @@ public class jDashboard extends javax.swing.JFrame {
         }
         else
         {
-            LocalDateTime myObj = LocalDateTime.now(); // Create a date object
-            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm:ss");
-            String formattedDate = myObj.format(myFormatObj);
-            Float price = Float.parseFloat(lblShopPrice.getText());
-            Float quantity = Float.parseFloat(spinnerShopQuantity.getValue().toString());
-            String formattedTotal = String.format("%.2f", (price*quantity));
-
-            cFileHandling f = new cFileHandling();
-            ArrayList<String> lines = cFileHandling.readFile("order.txt");
-            ArrayList<String> itemList = cFileHandling.readFile("item.txt");
-            for(int i=0;i<itemList.size();i++)
+            boolean canCart=false;
+            if(row>=0)
             {
-                Scanner sc = new Scanner(itemList.get(i)).useDelimiter(";");
-                String category = sc.next();
-                String itemName=sc.next();
-                String itemPrice=sc.next();
-                String itemQuantity=sc.next();
-                if(lblShopItemName.getText().equals(itemName))
-                { 
-                    Integer q = Integer.parseInt(itemQuantity.replaceAll("[^0-9.]",""));
-                    int q2 = Integer.parseInt(spinnerShopQuantity.getValue().toString());
-                    int check = q-q2;
-                    if(check>=0)
-                    {
-                        System.out.println("Can add to cart");
-                        canCart=true;
-                        itemList.set(i, (category+";"+itemName+";"+itemPrice+";"+check));
-                    }
-                    else
-                    {
-                        System.out.println("Cannot add to cart");
-                    }
-                }
-            }
-            int tempOrderId=0;
-            if(canCart)
-            {
-                for(String eachString: itemList)
-                    {
-                        if(!eachString.equals(null))
+                cFileHandling f = new cFileHandling();
+                ArrayList<String> itemList = cFileHandling.readFile("item.txt");
+                for(int i=0;i<itemList.size();i++)
+                {
+                    Scanner sc = new Scanner(itemList.get(i)).useDelimiter(";");
+                    String category = sc.next();
+                    String itemName=sc.next();
+                    String itemPrice=sc.next();
+                    String itemQuantity=sc.next();
+                    if(objModel.getValueAt(row, 1).toString().equals(itemName))
+                    { 
+                        Integer q = Integer.parseInt(itemQuantity.replaceAll("[^0-9.]",""));
+                        int q2 = Integer.parseInt(spinnerShopQuantity.getValue().toString());
+                        int check = q-q2;
+                        if(check>=0)
                         {
-                            f.newList(eachString); 
+                            canCart=true;
+                            itemList.set(i, (category+";"+itemName+";"+itemPrice+";"+check));
                         }
                     }
-                f.saveListToFile("item.txt");
-                try{
-                    for(String eachString: lines)
-                    {
-                        Scanner sc = new Scanner(eachString).useDelimiter(";");
-                        tempOrderId=Integer.valueOf(sc.next())+1;   
-                    }
                 }
-                catch(Exception e)
+                if(canCart)
                 {
-                    tempOrderId=1;
+                    for(String eachString: itemList)
+                    {
+                        f.newList(eachString);
+                    }
+                    f.saveListToFile("item.txt");
+
+                    cDate date = new cDate();
+                    date.calTotalPrice(objModel.getValueAt(row, 2).toString(), spinnerShopQuantity.getValue().toString());
+                    String str = "null;"+date.getDate()+";"+username+";"+objModel.getValueAt(row, 1).toString()+";"+objModel.getValueAt(row, 2).toString()+";"+spinnerShopQuantity.getValue().toString()+";"+date.getTotal()+";unpaid;null;null;no;null";
+                    f.addToList("order.txt", str);
+                    f.saveListToFile("order.txt");
+                    lblShopStatus.setText("Status: Item added to cart!");
                 }
-                String str = String.valueOf(tempOrderId)+";"+formattedDate+";"+username+";"+lblShopItemName.getText()+";"+lblShopPrice.getText()+";"+spinnerShopQuantity.getValue().toString()+";"+formattedTotal+";unpaid";
-                f.addToList("order.txt", str);
-                f.saveListToFile("order.txt");
-                lblShopStatus.setText("Status: Item added to cart!");
+                else
+                {
+                    lblShopStatus.setText("Status: Item exceeds stock available!");
+                }
             }
-            canCart=false;
+            else
+            {
+                lblShopStatus.setText("Status: Please select an item to cart");
+            }
         }
     }//GEN-LAST:event_btnShopCartActionPerformed
 
     private void btnShopLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopLoadTableActionPerformed
-        File item = new File("item.txt");
         DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
         objModel.setRowCount(0);
-        try
+        ArrayList<String> itemList = cFileHandling.readFile("item.txt");
+        for (String eachString: itemList)
         {
-            FileReader fr = new FileReader(item);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-
-            while(line!=null)
-            {
-                String[]dataRow = line.split(";");
-                objModel.addRow(dataRow);
-                line = br.readLine();
-            }
-            br.close();
-            lblShopStatus.setText("Status : Table Refreshed");
+            Scanner sc = new Scanner(eachString).useDelimiter(";");
+            String category = sc.next();
+            String item = sc.next();
+            String price = sc.next();
+            String quantity = sc.next();
+            objModel.addRow(new Object[]{category,item,price,quantity});
         }
-        catch(Exception e){}
+        lblShopStatus.setText("Status : Table Loaded!");
     }//GEN-LAST:event_btnShopLoadTableActionPerformed
-
-    private void btnShopGetItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopGetItemActionPerformed
-        DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
-        int row = tableShop.getSelectedRow();
-        if(row>=0)
-        {
-            String itemName = objModel.getValueAt(row,1).toString();
-            String itemPrice = objModel.getValueAt(row,2).toString();
-            lblShopItemName.setText(itemName);
-            lblShopPrice.setText(itemPrice);
-        }
-    }//GEN-LAST:event_btnShopGetItemActionPerformed
-
+    
     private void btnCartRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartRefreshTableActionPerformed
         DefaultTableModel objModel = (DefaultTableModel) tableCart.getModel();
         objModel.setRowCount(0);
@@ -938,22 +905,23 @@ public class jDashboard extends javax.swing.JFrame {
             String isPaid = sc.next();
             if(tempUsername.equals(username)&&isPaid.equals("unpaid"))
             {
-                objModel.addRow(new Object[]{orderID,tempItemName,tempItemPrice,tempItemQuantity,tempTotalPrice});
+                objModel.addRow(new Object[]{tempItemName,tempItemPrice,tempItemQuantity,tempTotalPrice});
                 count++;
             }
         }
-        lblCartTotalItem.setText("Total Items: "+count);
+        lblCartStatus.setText("Status : Table Loaded!");
     }//GEN-LAST:event_btnCartRefreshTableActionPerformed
 
     private void btnCartPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartPayActionPerformed
-        ArrayList<String> lines = cFileHandling.readFile("order.txt");
+        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
         boolean found = false;
         int response = JOptionPane.showConfirmDialog(this, "Confirm to pay?", "Confirm",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if(response==JOptionPane.YES_OPTION)
         {
-            for (int i=0;i<lines.size();i++)
+            int tempID=0;
+            for (int i=0;i<orderList.size();i++)
             {
-                Scanner sc = new Scanner(lines.get(i)).useDelimiter(";");
+                Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
                 String orderID = sc.next();
                 sc.next();sc.next(); //date //time
                 String tempUsername = sc.next();
@@ -962,14 +930,17 @@ public class jDashboard extends javax.swing.JFrame {
                 String tempItemQuantity = sc.next();
                 String tempTotalPrice = sc.next();
                 String isPaid = sc.next();
-                
-                LocalDateTime myObj = LocalDateTime.now(); // Create a date object
-                DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm:ss");
-                String formattedDate = myObj.format(myFormatObj);
+                try
+                {
+                   tempID=Integer.parseInt(orderID); 
+                }
+                catch(Exception e){}
                 if(tempUsername.equals(username)&&isPaid.equals("unpaid"))
                 {
-                    String tempString = orderID+";"+formattedDate+";"+tempUsername+";"+tempItemName+";"+tempItemPrice+";"+tempItemQuantity+";"+tempTotalPrice+";paid";
-                    lines.set(i, tempString);
+                    int finalID=tempID+1;
+                    cDate date = new cDate();
+                    String tempString = finalID+";"+date.getDate()+";"+tempUsername+";"+tempItemName+";"+tempItemPrice+";"+tempItemQuantity+";"+tempTotalPrice+";paid;null;Packing Item;no;null";
+                    orderList.set(i, tempString);
                     found = true;
                 }
             }
@@ -977,7 +948,7 @@ public class jDashboard extends javax.swing.JFrame {
         if(found)
         {
             cFileHandling f = new cFileHandling();
-            for(String eachString: lines)
+            for(String eachString: orderList)
             {
                 f.newList(eachString);
             }
@@ -990,10 +961,11 @@ public class jDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCartPayActionPerformed
 
     private void btnPurchaseHistoryRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseHistoryRefreshActionPerformed
-        ArrayList<String> lines = cFileHandling.readFile("order.txt");
         DefaultTableModel objModel = (DefaultTableModel) tablePurchaseHistory.getModel();
         objModel.setRowCount(0);
-        for (String eachString: lines)
+        comboSelectID.removeAllItems();
+        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
+        for (String eachString: orderList)
         {
             Scanner sc = new Scanner(eachString).useDelimiter(";");
             String orderID = sc.next();
@@ -1005,28 +977,37 @@ public class jDashboard extends javax.swing.JFrame {
             String tempItemQuantity = sc.next();
             String tempTotalPrice = sc.next();
             String isPaid = sc.next();
+            sc.next();
+            String deliveryStatus = sc.next();
+            String feedback = sc.next();
             System.out.println(eachString);
             if(tempUsername.equals(username)&&isPaid.equals("paid"))
             {
-                System.out.println(eachString);
-                objModel.addRow(new Object[]{date+" "+time,orderID,tempItemName,tempItemPrice,tempItemQuantity,tempTotalPrice});
+                objModel.addRow(new Object[]{date+" "+time,orderID,tempItemName,tempItemPrice,tempItemQuantity,tempTotalPrice,deliveryStatus});
+                if(deliveryStatus.equals("Delivered")&&feedback.equals("no"))
+                {
+                    comboSelectID.addItem(orderID);
+                }
             }
         }
-    }//GEN-LAST:event_btnPurchaseHistoryRefreshActionPerformed
-
-    private void btnCartGetItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartGetItemActionPerformed
-        DefaultTableModel objModel = (DefaultTableModel) tableCart.getModel();
-        int row = tableCart.getSelectedRow();
-        if(row>=0)
+        lblFeedbackStatus.setText("Status: Table Loaded!");
+        try
         {
-            String itemName = objModel.getValueAt(row,1).toString();
-            String itemPrice = objModel.getValueAt(row,2).toString();
-            String itemQuantity = objModel.getValueAt(row,3).toString();
-            lblCartItemName.setText(itemName);
-            lblCartPrice.setText(itemPrice);
-            spinnerCartQuantity.setValue(Integer.parseInt(itemQuantity));
-        }
-    }//GEN-LAST:event_btnCartGetItemActionPerformed
+            Set<String> seenValues = new HashSet<String>();
+            for(int i=0;i<comboSelectID.getItemCount();i++)
+            {
+                String currentValue = comboSelectID.getItemAt(i);
+                if (seenValues.contains(currentValue)) {
+                    // If the value has already been seen, remove it from the combo box
+                    comboSelectID.removeItemAt(i);
+                    i--; // Decrement the index to account for the removed element
+                } else {
+                    // Otherwise, add the value to the set of seen values
+                    seenValues.add(currentValue);
+                }
+            }
+        }catch(Exception e){}
+    }//GEN-LAST:event_btnPurchaseHistoryRefreshActionPerformed
 
     private void btnCartEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartEditActionPerformed
         DefaultTableModel objModel = (DefaultTableModel) tableCart.getModel();
@@ -1035,86 +1016,66 @@ public class jDashboard extends javax.swing.JFrame {
         int finalQuantity;
         if(row>=0)
         {
-            String category;
-            String itemName;
-            String itemPrice;
-            String itemQuantity;
-            cFileHandling f = new cFileHandling();
             ArrayList<String> itemList = cFileHandling.readFile("item.txt");
-            ArrayList<String> lines = cFileHandling.readFile("order.txt");
+            ArrayList<String> orderList = cFileHandling.readFile("order.txt");
             for(int i=0;i<itemList.size();i++)
             {
                 Scanner sc = new Scanner(itemList.get(i)).useDelimiter(";");
-                category = sc.next();
-                itemName=sc.next();
-                itemPrice=sc.next();
-                itemQuantity=sc.next();
-                if(lblCartItemName.getText().equals(itemName)&&!objModel.getValueAt(row,3).toString().equals(spinnerCartQuantity.getValue().toString()))
+                String category = sc.next();
+                String itemName=sc.next();
+                String itemPrice=sc.next();
+                String itemQuantity=sc.next();
+                if(itemName.equals(objModel.getValueAt(row, 0).toString())&&!objModel.getValueAt(row,3).toString().equals(spinnerCartQuantity.getValue().toString()))
                 { 
                     Integer qOri = Integer.parseInt(itemQuantity.replaceAll("[^0-9.]",""));
                     int q2 = Integer.parseInt(spinnerCartQuantity.getValue().toString());
-                    int q3 = Integer.parseInt(objModel.getValueAt(row,3).toString());
+                    int q3 = Integer.parseInt(objModel.getValueAt(row,2).toString());
                     int check = qOri-q2;
                     if(check>=0)
                     {
-                        int q4;
                         canEdit=true;
-                        if(q2<Integer.parseInt(objModel.getValueAt(row,3).toString()))
+                        if(q2<Integer.parseInt(objModel.getValueAt(row,2).toString()))
                         {
-                            q4 = (Integer.parseInt(objModel.getValueAt(row,3).toString())-q2)+qOri;
-                            System.out.println(q3);
-                            itemList.set(i, (category+";"+itemName+";"+itemPrice+";"+q4));
-                            finalQuantity=q4;
+                            finalQuantity = (Integer.parseInt(objModel.getValueAt(row,2).toString())-q2)+qOri;
+                            itemList.set(i, (category+";"+itemName+";"+itemPrice+";"+finalQuantity));
                         }
                         else
                         {
-                            q4 = (q3+qOri)-q2;
-                            itemList.set(i, (category+";"+itemName+";"+itemPrice+";"+q4));
-                            finalQuantity=q4;
+                            finalQuantity = (q3+qOri)-q2;
+                            itemList.set(i, (category+";"+itemName+";"+itemPrice+";"+finalQuantity));
                         }                        
-                    }
-                    else
-                    {
-                        System.out.println("Cannot add to cart (quantity exceed stock)");
                     }
                 }
             }
             if(canEdit)
             {
-                System.out.println(canEdit);
-                LocalDateTime myObj = LocalDateTime.now(); // Create a date object
-                DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm:ss");
-                String formattedDate = myObj.format(myFormatObj);
+                cDate date = new cDate();
+                objModel.setValueAt(spinnerCartQuantity.getValue(), row, 2);
+                date.calTotalPrice(spinnerCartQuantity.getValue().toString(), objModel.getValueAt(row,1).toString());
+                objModel.setValueAt(date.getTotal(),row,3);
                 
-                objModel.setValueAt(spinnerCartQuantity.getValue(), row, 3);
-                Float quantity = Float.parseFloat(spinnerCartQuantity.getValue().toString());
-                Float price = Float.parseFloat(objModel.getValueAt(row,2).toString());
-                String formattedTotal = String.format("%.2f", (price*quantity));
-                objModel.setValueAt(formattedTotal,row,4);
-                
+                cFileHandling f = new cFileHandling();
                 for(String eachString: itemList)
                 {
                     f.newList(eachString); 
                 }
                 f.saveListToFile("item.txt");
-                
-                for(int i=0; i<lines.size();i++)
+                for(int i=0; i<orderList.size();i++)
                 {
-                    Scanner sc = new Scanner(lines.get(i)).useDelimiter(";");
+                    Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
                     String tempOrderId=sc.next();
                     String tempDate = sc.next();
                     String tempTime = sc.next();
                     String tempUsername = sc.next();
                     String tempCartItemName = sc.next();
                     String tempCartItemPrice = sc.next(); 
-                    if(objModel.getValueAt(row,0).toString().equals(tempOrderId))
+                    if(tempOrderId.equals("null")&&objModel.getValueAt(row,0).toString().equals(tempCartItemName)&&tempUsername.equals(username))
                     {
-                        String tempString=tempOrderId+";"+formattedDate+";"+tempUsername+";"+tempCartItemName+";"+tempCartItemPrice+";"+objModel.getValueAt(row, 3).toString()+";"+formattedTotal+";unpaid";
-                        lines.set(i,tempString);
-                        System.out.println(lines.get(i));
+                        String tempString=tempOrderId+";"+date.getDate()+";"+tempUsername+";"+tempCartItemName+";"+tempCartItemPrice+";"+objModel.getValueAt(row, 2).toString()+";"+date.getTotal()+";unpaid;null;null;no;null";
+                        orderList.set(i,tempString);
                     }
                 }
-                for(String eachString: lines)
+                for(String eachString: orderList)
                 {
                     f.newList(eachString); 
                 }
@@ -1128,6 +1089,56 @@ public class jDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCartEditActionPerformed
 
+    private void btnSubmitFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitFeedbackActionPerformed
+        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
+        boolean canSubmit=false;
+        for(int i=0;i<orderList.size();i++)
+        {
+            Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
+            String tempOrderID = sc.next();
+            String tempDate=sc.next();
+            String tempTime=sc.next();
+            String tempUsername=sc.next();
+            String tempItemName=sc.next();
+            String tempPrice=sc.next();
+            String tempQuantity=sc.next();
+            String tempTotalPrice=sc.next();
+            String tempIsPaid=sc.next();
+            String tempDeliveryStaff=sc.next();
+            String tempStatus=sc.next();
+            String tempHasFeedback=sc.next();
+            if(comboSelectID.getSelectedItem().equals(tempOrderID)&&tempStatus.equals("Delivered")&&tempHasFeedback.equals("no")&&!txtFeedback.getText().equals(""))
+            {
+                orderList.set(i, tempOrderID+";"+tempDate+";"+tempTime+";"+tempUsername+";"+tempItemName
+                    +";"+tempPrice+";"+tempQuantity+";"+tempTotalPrice+";"+tempIsPaid+";"+tempDeliveryStaff+";"+tempStatus+";yes;"+txtFeedback.getText());
+                canSubmit=true;
+            }
+        }
+        if(canSubmit)
+        {
+            cFileHandling f = new cFileHandling();
+            for(String eachString: orderList)
+            {
+                f.newList(eachString);
+            }
+            f.saveListToFile("order.txt");
+            txtFeedback.setText("");
+            lblFeedbackStatus.setText("Status : Feedback submitted!");
+            canSubmit=false;
+        }
+        else
+        {
+            lblFeedbackStatus.setText("Status : Feedback exists!");
+        }
+    }//GEN-LAST:event_btnSubmitFeedbackActionPerformed
+
+    private void txtShopSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtShopSearchKeyPressed
+        DefaultTableModel table = (DefaultTableModel) tableShop.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table);
+        tableShop.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(txtShopSearch.getText().trim()));
+    }//GEN-LAST:event_txtShopSearchKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -1139,6 +1150,7 @@ public class jDashboard extends javax.swing.JFrame {
          */
         //</editor-fold>
         /* Create and display the form */
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new jDashboard().setVisible(true);
@@ -1148,7 +1160,6 @@ public class jDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCartEdit;
-    private javax.swing.JButton btnCartGetItem;
     private javax.swing.JButton btnCartPay;
     private javax.swing.JButton btnCartRefreshTable;
     private javax.swing.JButton btnCartRemove;
@@ -1156,50 +1167,39 @@ public class jDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnProfileLogout;
     private javax.swing.JButton btnPurchaseHistoryRefresh;
     private javax.swing.JButton btnShopCart;
-    private javax.swing.JButton btnShopGetItem;
     private javax.swing.JButton btnShopLoadTable;
-    private javax.swing.JToggleButton btnShopSearch;
-    private javax.swing.JComboBox<String> comboCategory;
-    private javax.swing.JComboBox<String> comboName;
-    private javax.swing.JComboBox<String> comboPrice;
+    private javax.swing.JButton btnSubmitFeedback;
+    private javax.swing.JComboBox<String> comboSelectID;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JLabel label123;
     private javax.swing.JLabel lblCartItemName;
-    private javax.swing.JLabel lblCartPrice;
     private javax.swing.JLabel lblCartStatus;
-    private javax.swing.JLabel lblCartTotalItem;
+    private javax.swing.JLabel lblFeedbackStatus;
     private javax.swing.JLabel lblProfileStatus;
-    private javax.swing.JLabel lblShopItemName;
-    private javax.swing.JLabel lblShopPrice;
     private javax.swing.JLabel lblShopStatus;
     private javax.swing.JLabel lblUsername;
+    private javax.swing.JLabel lblWelcome;
     private javax.swing.JPanel panelCart;
     private javax.swing.JPanel panelHistory;
     private javax.swing.JPanel panelProfile;
@@ -1211,6 +1211,7 @@ public class jDashboard extends javax.swing.JFrame {
     private javax.swing.JTable tableShop;
     private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtCity;
+    private javax.swing.JTextArea txtFeedback;
     private javax.swing.JPasswordField txtNewPassword;
     private javax.swing.JPasswordField txtNewPassword2;
     private javax.swing.JPasswordField txtPassword;

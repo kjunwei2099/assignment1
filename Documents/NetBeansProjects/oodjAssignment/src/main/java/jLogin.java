@@ -229,7 +229,7 @@ public class jLogin extends javax.swing.JFrame {
             this.dispose();
             if(login.getRole().equals("admin"))
             {
-                
+                //Put admin dashboard
             }
             else if(login.getRole().equals("customer"))
             {
