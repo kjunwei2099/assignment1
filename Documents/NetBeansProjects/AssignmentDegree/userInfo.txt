@@ -1,3 +1,0 @@
-admin;qwer;1234;;;;
-customer;junwei2099;Kwanjunwei7;5, Jalan Bukit Mewah 9/17;43000;Kajang;Selangor
-deliverystaff;zxcv;1234;;;;
