@@ -229,7 +229,8 @@ public class jLogin extends javax.swing.JFrame {
             this.dispose();
             if(user.getRole().equals("admin")) // login.getRole() inside 
             {
-                //Put admin dashboard
+                jAdmin a = new jAdmin();
+                a.setVisible(true);
             }
             else if(user.getRole().equals("customer"))
             {
