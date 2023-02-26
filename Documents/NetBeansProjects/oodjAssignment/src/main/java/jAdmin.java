@@ -1,5 +1,6 @@
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.RowFilter;
@@ -37,6 +40,7 @@ public class jAdmin extends javax.swing.JFrame {
     /**
      * Creates new form jDashboard
      */
+    
     public jAdmin() {
         initComponents();
         configuration();        
@@ -127,16 +131,11 @@ public class jAdmin extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         panelProduct = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableShop = new javax.swing.JTable();
-        comboCategory = new javax.swing.JComboBox<>();
+        tableAdminShop = new javax.swing.JTable();
+        comboAdminCategory = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        comboName = new javax.swing.JComboBox<>();
-        comboPrice = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
-        txtShopSearch = new javax.swing.JTextField();
-        btnShopSearch = new javax.swing.JToggleButton();
+        txtAdminShopSearch = new javax.swing.JTextField();
         btnShopCart = new javax.swing.JButton();
         lblShopItemName = new javax.swing.JLabel();
         lblShopPrice = new javax.swing.JLabel();
@@ -144,9 +143,12 @@ public class jAdmin extends javax.swing.JFrame {
         btnShopLoadTable = new javax.swing.JButton();
         lblShopStatus = new javax.swing.JLabel();
         btnShopGetItem = new javax.swing.JButton();
-        spinnerShopQuantity = new javax.swing.JSpinner();
+        spinnerAdminShopStock = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        txtAdminAddPrice = new javax.swing.JTextField();
+        txtAdminAddProduct1 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
         panelCustomer = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableCart = new javax.swing.JTable();
@@ -199,7 +201,6 @@ public class jAdmin extends javax.swing.JFrame {
 
         jLabel11.setText("Filter By");
 
-        comboAdminSearchRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administator", "Delivery Staff", "customer" }));
         comboAdminSearchRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboAdminSearchRoleActionPerformed(evt);
@@ -310,8 +311,7 @@ public class jAdmin extends javax.swing.JFrame {
                             .addGroup(panelRoleLayout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addGap(18, 18, 18)
-                                .addComponent(comboAdminSearchRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(comboAdminSearchRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelRoleLayout.createSequentialGroup()
                                 .addComponent(jLabel15)
                                 .addGap(18, 18, 18)
@@ -364,7 +364,7 @@ public class jAdmin extends javax.swing.JFrame {
 
         panel.addTab("User Management", panelRole);
 
-        tableShop.setModel(new javax.swing.table.DefaultTableModel(
+        tableAdminShop.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -372,34 +372,28 @@ public class jAdmin extends javax.swing.JFrame {
                 "Category Name", "Item Name", "Price", "Stock Left"
             }
         ));
-        jScrollPane1.setViewportView(tableShop);
-        if (tableShop.getColumnModel().getColumnCount() > 0) {
-            tableShop.getColumnModel().getColumn(2).setHeaderValue("Price");
-            tableShop.getColumnModel().getColumn(3).setResizable(false);
-            tableShop.getColumnModel().getColumn(3).setHeaderValue("Stock Left");
+        jScrollPane1.setViewportView(tableAdminShop);
+        if (tableAdminShop.getColumnModel().getColumnCount() > 0) {
+            tableAdminShop.getColumnModel().getColumn(2).setHeaderValue("Price");
+            tableAdminShop.getColumnModel().getColumn(3).setResizable(false);
+            tableAdminShop.getColumnModel().getColumn(3).setHeaderValue("Stock Left");
         }
 
-        comboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboAdminCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboAdminCategoryActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Filter By");
 
         jLabel2.setText("Category");
 
-        jLabel3.setText("Name (ASC / DECS)");
-
-        comboName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        comboPrice.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel4.setText("Price (ASC /DESC)");
-
-        txtShopSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtShopSearchActionPerformed(evt);
+        txtAdminShopSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAdminShopSearchKeyPressed(evt);
             }
         });
-
-        btnShopSearch.setText("Search");
 
         btnShopCart.setText("Add to Cart");
         btnShopCart.addActionListener(new java.awt.event.ActionListener() {
@@ -408,7 +402,7 @@ public class jAdmin extends javax.swing.JFrame {
             }
         });
 
-        jLabel8.setText("Quantity :");
+        jLabel8.setText("Stock:");
 
         btnShopLoadTable.setText("Load Table");
         btnShopLoadTable.addActionListener(new java.awt.event.ActionListener() {
@@ -426,11 +420,13 @@ public class jAdmin extends javax.swing.JFrame {
             }
         });
 
-        spinnerShopQuantity.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
+        spinnerAdminShopStock.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
-        jLabel6.setText("Item Price : RM");
+        jLabel6.setText("Item Price : ");
 
         jLabel7.setText("Item Name :");
+
+        jLabel3.setText("RM");
 
         javax.swing.GroupLayout panelProductLayout = new javax.swing.GroupLayout(panelProduct);
         panelProduct.setLayout(panelProductLayout);
@@ -444,53 +440,51 @@ public class jAdmin extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(26, 26, 26)
                         .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelProductLayout.createSequentialGroup()
-                                .addComponent(comboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(53, 53, 53)
-                                .addComponent(comboName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelProductLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(46, 46, 46)
-                                .addComponent(jLabel3)))
-                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelProductLayout.createSequentialGroup()
-                                .addGap(51, 51, 51)
-                                .addComponent(comboPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelProductLayout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(jLabel4)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnShopSearch))
+                            .addComponent(comboAdminCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtAdminShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(76, 76, 76))
                     .addGroup(panelProductLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(panelProductLayout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(18, 18, 18)
-                                .addComponent(spinnerShopQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(440, 440, 440))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelProductLayout.createSequentialGroup()
-                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(panelProductLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblShopPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelProductLayout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblShopItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnShopGetItem)))
-                                .addGap(16, 16, 16)))
                         .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelProductLayout.createSequentialGroup()
-                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnShopCart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnShopLoadTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(0, 601, Short.MAX_VALUE))
-                            .addComponent(lblShopStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(22, 22, 22)
+                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelProductLayout.createSequentialGroup()
+                                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(panelProductLayout.createSequentialGroup()
+                                                .addComponent(jLabel3)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(txtAdminAddPrice))
+                                            .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(panelProductLayout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(lblShopItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelProductLayout.createSequentialGroup()
+                                                .addGap(53, 53, 53)
+                                                .addComponent(lblShopPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(16, 16, 16)
+                                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(panelProductLayout.createSequentialGroup()
+                                                .addComponent(btnShopLoadTable, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 326, Short.MAX_VALUE))
+                                            .addComponent(lblShopStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addGroup(panelProductLayout.createSequentialGroup()
+                                        .addComponent(spinnerAdminShopStock, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(panelProductLayout.createSequentialGroup()
+                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addGroup(panelProductLayout.createSequentialGroup()
+                                        .addComponent(btnShopGetItem)
+                                        .addGap(34, 34, 34)
+                                        .addComponent(btnShopCart)))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         panelProductLayout.setVerticalGroup(
@@ -499,19 +493,12 @@ public class jAdmin extends javax.swing.JFrame {
                 .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelProductLayout.createSequentialGroup()
                         .addGap(16, 16, 16)
-                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(comboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(comboName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(comboPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnShopSearch))
+                            .addComponent(comboAdminCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelProductLayout.createSequentialGroup()
-                                .addComponent(txtShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtAdminShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(10, 10, 10))))
                     .addGroup(panelProductLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
@@ -521,22 +508,38 @@ public class jAdmin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblShopItemName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnShopLoadTable)
-                        .addComponent(btnShopGetItem)
-                        .addComponent(jLabel7)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblShopPrice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnShopCart)
-                    .addComponent(jLabel8)
-                    .addComponent(spinnerShopQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
-                .addComponent(lblShopStatus)
-                .addGap(29, 29, 29))
+                    .addGroup(panelProductLayout.createSequentialGroup()
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnShopLoadTable)
+                            .addComponent(jLabel7)
+                            .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 3, Short.MAX_VALUE)))
+                .addGap(5, 5, 5)
+                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelProductLayout.createSequentialGroup()
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelProductLayout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(7, 7, 7))
+                            .addGroup(panelProductLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                    .addComponent(txtAdminAddPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)))
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(spinnerAdminShopStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnShopGetItem)
+                            .addComponent(btnShopCart))
+                        .addGap(7, 7, 7)
+                        .addComponent(lblShopStatus)
+                        .addGap(29, 29, 29))
+                    .addGroup(panelProductLayout.createSequentialGroup()
+                        .addComponent(lblShopPrice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(123, 123, 123))))
         );
 
         panel.addTab("Product", panelProduct);
@@ -761,7 +764,7 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         panel.addTab("Purchase History", panelHistory);
@@ -905,7 +908,7 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(txtState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(52, 52, 52)
                 .addComponent(lblProfileStatus)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addContainerGap(194, Short.MAX_VALUE))
         );
 
         panel.addTab("Profile", panelCustomerProfile);
@@ -930,10 +933,6 @@ public class jAdmin extends javax.swing.JFrame {
         configuration();
         JOptionPane.showMessageDialog(null,"Logged Out", "Message", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btnProfileLogoutActionPerformed
-
-    private void txtShopSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtShopSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtShopSearchActionPerformed
 
     private void btnCartRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartRemoveActionPerformed
         DefaultTableModel objModel = (DefaultTableModel) tableCart.getModel();
@@ -1022,7 +1021,7 @@ public class jAdmin extends javax.swing.JFrame {
             DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm:ss");
             String formattedDate = myObj.format(myFormatObj);
             Float price = Float.parseFloat(lblShopPrice.getText());
-            Float quantity = Float.parseFloat(spinnerShopQuantity.getValue().toString());
+            Float quantity = Float.parseFloat(spinnerAdminShopStock.getValue().toString());
             String formattedTotal = String.format("%.2f", (price*quantity));
 
             cFileHandling f = new cFileHandling();
@@ -1038,7 +1037,7 @@ public class jAdmin extends javax.swing.JFrame {
                 if(lblShopItemName.getText().equals(itemName))
                 { 
                     Integer q = Integer.parseInt(itemQuantity.replaceAll("[^0-9.]",""));
-                    int q2 = Integer.parseInt(spinnerShopQuantity.getValue().toString());
+                    int q2 = Integer.parseInt(spinnerAdminShopStock.getValue().toString());
                     int check = q-q2;
                     if(check>=0)
                     {
@@ -1074,7 +1073,7 @@ public class jAdmin extends javax.swing.JFrame {
                 {
                     tempOrderId=1;
                 }
-                String str = String.valueOf(tempOrderId)+";"+formattedDate+";"+username+";"+lblShopItemName.getText()+";"+lblShopPrice.getText()+";"+spinnerShopQuantity.getValue().toString()+";"+formattedTotal+";unpaid";
+                String str = String.valueOf(tempOrderId)+";"+formattedDate+";"+username+";"+lblShopItemName.getText()+";"+lblShopPrice.getText()+";"+spinnerAdminShopStock.getValue().toString()+";"+formattedTotal+";unpaid";
                 f.addToList("order.txt", str);
                 f.saveListToFile("order.txt");
                 lblShopStatus.setText("Status: Item added to cart!");
@@ -1085,29 +1084,65 @@ public class jAdmin extends javax.swing.JFrame {
 
     private void btnShopLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopLoadTableActionPerformed
         File item = new File("item.txt");
-        DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
+        DefaultTableModel objModel = (DefaultTableModel) tableAdminShop.getModel();
         objModel.setRowCount(0);
-        try
-        {
+        try {
             FileReader fr = new FileReader(item);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
 
-            while(line!=null)
-            {
-                String[]dataRow = line.split(";");
+            while (line != null) {
+                String[] dataRow = line.split(";");
                 objModel.addRow(dataRow);
                 line = br.readLine();
             }
             br.close();
             lblShopStatus.setText("Status : Table Refreshed");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch(Exception e){}
+
+        // Add an "All" option to show all categories
+        comboAdminCategory.addItem("All");
+
+        // Get unique category values from item.txt
+        Set<String> categories = new HashSet<>();
+
+        //get category value from item.txt
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("item.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(";");
+                String category = data[0];
+                categories.add(category);
+            }
+            br.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        comboAdminCategory.addActionListener(e -> {
+            String selectedCategory = comboAdminCategory.getSelectedItem().toString();
+            if (selectedCategory.equals("All")) {
+                // Show all rows in table
+                tableAdminShop.setRowSorter(null);
+            } else {
+                // Show only rows with selected category
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(objModel);
+                sorter.setRowFilter(RowFilter.regexFilter(selectedCategory, 0));
+                tableAdminShop.setRowSorter(sorter);
+            }
+        });
+
+        for (String category : categories) {
+            comboAdminCategory.addItem(category);
+        }
     }//GEN-LAST:event_btnShopLoadTableActionPerformed
 
     private void btnShopGetItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopGetItemActionPerformed
-        DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
-        int row = tableShop.getSelectedRow();
+        DefaultTableModel objModel = (DefaultTableModel) tableAdminShop.getModel();
+        int row = tableAdminShop.getSelectedRow();
         if(row>=0)
         {
             String itemName = objModel.getValueAt(row,1).toString();
@@ -1329,79 +1364,84 @@ public class jAdmin extends javax.swing.JFrame {
     private void btnAdminSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminSaveActionPerformed
         String Username = txtAdminUsername.getText();
         String Password = txtAdminPassword.getText();
-        String ConPassword = txtAdminPassword.getText();
-        String Contact_Number;
+        String ConPassword = txtAdminPassword2.getText();
         String Role = (String)comboAdminRole.getSelectedItem();
         
         cUser admin = new cUser(Username,Password);
         admin.checkLogin("userinfo.txt");
         
-        if (ConPassword != Password) {
-            if(JOptionPane.showConfirmDialog(null,"Password Incorrect!", "Please re-enter password", JOptionPane.PLAIN_MESSAGE)==0)
-            {
-                this.dispose();
-                jLogin login = new jLogin();
-                login.setVisible(true);
-                Password = "";
-                ConPassword = "";
-            }
+        if (!ConPassword.equals(Password)) {
+            JOptionPane.showConfirmDialog(null,"Password Incorrect!", 
+                    "Please re-enter password", JOptionPane.ERROR_MESSAGE);
+            txtAdminPassword.setText("");
+            txtAdminPassword2.setText("");
         }
         
-        
-        
-        
+        else {
+            if ((!Username.equals(""))&&(!Password.equals(""))) {
+            if(!admin.getUsernameFound()) {
+                String str = Role +";"+Username+";"+Password+";;;;";
+                cFileHandling f = new cFileHandling();
+                f.addToList("userInfo.txt", str);
+                f.saveListToFile("userInfo.txt");
+            }
+            else {
+                JOptionPane.showConfirmDialog(null,"The username have been taken, Please contact Administator for more information",
+                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+            else {
+            JOptionPane.showConfirmDialog(null,"Kindly fill in all the blank field",
+                        "No empty field allowed", JOptionPane.WARNING_MESSAGE);
+        }
+
+        }
     }//GEN-LAST:event_btnAdminSaveActionPerformed
 
     private void btnAdminClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminClearActionPerformed
-        // TODO add your handling code here:
+        txtAdminUsername.setText("");
+        txtAdminPassword.setText("");
     }//GEN-LAST:event_btnAdminClearActionPerformed
 
     private void btnAdminDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminDeleteActionPerformed
         int selectedrow = tableAdminUser1.getSelectedRow();
-            
-    if (selectedrow == -1) {
-        JOptionPane.showMessageDialog(null, "Please select a user to delete!");
-    }
-    else {
-        if (JOptionPane.showConfirmDialog(null,"Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE)==0) {
-            DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
-            String role = (String) model.getValueAt(selectedrow, 0);
-            String username = (String) model.getValueAt(selectedrow, 1);
-            model.removeRow(selectedrow);
 
-            FileWriter fw = null;
-            try (BufferedReader br = new BufferedReader(new FileReader("userinfo.txt"))) {
-                String line;
-                StringBuilder sb = new StringBuilder();
+        if (selectedrow == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a user to delete!");
+        } else {
+            if (JOptionPane.showConfirmDialog(null,"Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE) == 0) {
+                DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
+                String role = (String) model.getValueAt(selectedrow, 0);
+                String username = (String) model.getValueAt(selectedrow, 1);
+                model.removeRow(selectedrow);
 
-                while ((line = br.readLine()) !=null) {
-                    String[] info = line.split(",");
-                    String dltRole = info[0].trim();
-                    String dltUsername = info[1].trim();
+                File inputFile = new File("userinfo.txt");
+                File tempFile = new File("userinfo_temp.txt");
 
-                    if (!(dltUsername.equals(username) && dltRole.equals(role))) {
-                        sb.append(line).append("\n");
+                try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                     BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String[] info = line.split(";");
+                        String dltRole = info[0].trim();
+                        String dltUsername = info[1].trim();
+
+                        if (!(dltUsername.equals(username) && dltRole.equals(role))) {
+                            writer.write(line + System.getProperty("line.separator"));
+                        }
                     }
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                fw = new FileWriter("userinfo.txt");
-                fw.write(sb.toString());
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                // Close the FileWriter
-                if (fw != null) {
-                    try {
-                        fw.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                // Delete the original file and rename the temporary file
+                if (inputFile.delete()) {
+                    tempFile.renameTo(inputFile);
                 }
             }
         }
-    }
     }//GEN-LAST:event_btnAdminDeleteActionPerformed
 
     private void comboAdminRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminRoleActionPerformed
@@ -1409,29 +1449,80 @@ public class jAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_comboAdminRoleActionPerformed
 
     private void btnAdminLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminLoadTableActionPerformed
-       DefaultTableModel objModel = (DefaultTableModel) tableAdminUser1.getModel();
+        DefaultTableModel objModel = (DefaultTableModel) tableAdminUser1.getModel();
         objModel.setRowCount(0);
         ArrayList<String> userList = cFileHandling.readFile("userinfo.txt");
-        for (String eachString: userList)
-        {
+        for (String eachString: userList) {
             Scanner sc = new Scanner(eachString).useDelimiter(";");
             String role = sc.next();
             String username = sc.next();
-            objModel.addRow(new Object[]{role,username});
+            String password = sc.next(); // assuming password is the third field
+            objModel.addRow(new Object[]{role, username, password});
         }
         lblShopStatus.setText("Status : Table Loaded!");
+
+        // Add an "All" option to show all roles
+        comboAdminSearchRole.addItem("All");
+
+        // Get unique role values from userinfo.txt
+        Set<String> roles = new HashSet<>();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("userinfo.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(";");
+                String role = data[0];
+                roles.add(role);
+            }
+            br.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        comboAdminSearchRole.addActionListener(e -> {
+            String selectedRole = comboAdminSearchRole.getSelectedItem().toString();
+            if (selectedRole.equals("All")) {
+                // Show all rows in table
+                tableAdminUser1.setRowSorter(null);
+            } else {
+                // Show only rows with selected role
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(objModel);
+                sorter.setRowFilter(RowFilter.regexFilter(selectedRole, 0));
+                tableAdminUser1.setRowSorter(sorter);
+            }
+        });
+
+        for (String role : roles) {
+            comboAdminSearchRole.addItem(role);
+        }
     }//GEN-LAST:event_btnAdminLoadTableActionPerformed
 
     private void txtAdminSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdminSearchKeyPressed
+        
+        // if txtShopSearch is keyed in with some value, then the table will updated based on the value       
         DefaultTableModel table = (DefaultTableModel) tableAdminUser1.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table);
+        
+        // show the filtered data in table 
         tableAdminUser1.setRowSorter(tr);
-        tr.setRowFilter(RowFilter.regexFilter(txtAdminSearch.getText().trim()));        // TODO add your handling code here:
+        tr.setRowFilter(RowFilter.regexFilter(txtAdminSearch.getText().trim()));
     }//GEN-LAST:event_txtAdminSearchKeyPressed
 
     private void comboAdminSearchRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminSearchRoleActionPerformed
 
     }//GEN-LAST:event_comboAdminSearchRoleActionPerformed
+
+    private void txtAdminShopSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdminShopSearchKeyPressed
+        DefaultTableModel table = (DefaultTableModel) tableAdminShop.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table);
+        tableAdminShop.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(txtAdminShopSearch.getText().trim()));
+    }//GEN-LAST:event_txtAdminShopSearchKeyPressed
+
+    private void comboAdminCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminCategoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboAdminCategoryActionPerformed
   
     /**
      * @param args the command line arguments
@@ -1448,7 +1539,9 @@ public class jAdmin extends javax.swing.JFrame {
             public void run() {
                 new jDashboard().setVisible(true);
             }
-        });
+        }); 
+
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1467,12 +1560,9 @@ public class jAdmin extends javax.swing.JFrame {
     private javax.swing.JButton btnShopCart;
     private javax.swing.JButton btnShopGetItem;
     private javax.swing.JButton btnShopLoadTable;
-    private javax.swing.JToggleButton btnShopSearch;
+    private javax.swing.JComboBox<String> comboAdminCategory;
     private javax.swing.JComboBox<String> comboAdminRole;
     private javax.swing.JComboBox<String> comboAdminSearchRole;
-    private javax.swing.JComboBox<String> comboCategory;
-    private javax.swing.JComboBox<String> comboName;
-    private javax.swing.JComboBox<String> comboPrice;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1494,7 +1584,6 @@ public class jAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -1523,23 +1612,25 @@ public class jAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel panelHistory;
     private javax.swing.JPanel panelProduct;
     private javax.swing.JPanel panelRole;
+    private javax.swing.JSpinner spinnerAdminShopStock;
     private javax.swing.JSpinner spinnerCartQuantity;
-    private javax.swing.JSpinner spinnerShopQuantity;
+    private javax.swing.JTable tableAdminShop;
     private javax.swing.JTable tableAdminUser1;
     private javax.swing.JTable tableCart;
     private javax.swing.JTable tablePurchaseHistory;
-    private javax.swing.JTable tableShop;
     private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextField txtAdminAddPrice;
+    private javax.swing.JTextField txtAdminAddProduct1;
     private javax.swing.JPasswordField txtAdminPassword;
     private javax.swing.JPasswordField txtAdminPassword2;
     private javax.swing.JTextField txtAdminSearch;
+    private javax.swing.JTextField txtAdminShopSearch;
     private javax.swing.JTextField txtAdminUsername;
     private javax.swing.JTextField txtCity;
     private javax.swing.JPasswordField txtNewPassword;
     private javax.swing.JPasswordField txtNewPassword2;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPostcode;
-    private javax.swing.JTextField txtShopSearch;
     private javax.swing.JTextField txtState;
     // End of variables declaration//GEN-END:variables
 }
