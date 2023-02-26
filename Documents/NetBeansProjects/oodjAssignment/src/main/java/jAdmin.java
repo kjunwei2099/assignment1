@@ -1,7 +1,10 @@
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 /*
@@ -1339,7 +1344,51 @@ public class jAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdminClearActionPerformed
 
     private void btnAdminDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminDeleteActionPerformed
-        // TODO add your handling code here:
+        int selectedrow = tableAdminUser1.getSelectedRow();
+            
+    if (selectedrow == -1) {
+        JOptionPane.showMessageDialog(null, "Please select a user to delete!");
+    }
+    else {
+        if (JOptionPane.showConfirmDialog(null,"Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE)==0) {
+            DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
+            String role = (String) model.getValueAt(selectedrow, 0);
+            String username = (String) model.getValueAt(selectedrow, 1);
+            model.removeRow(selectedrow);
+
+            FileWriter fw = null;
+            try (BufferedReader br = new BufferedReader(new FileReader("userinfo.txt"))) {
+                String line;
+                StringBuilder sb = new StringBuilder();
+
+                while ((line = br.readLine()) !=null) {
+                    String[] info = line.split(",");
+                    String dltRole = info[0].trim();
+                    String dltUsername = info[1].trim();
+
+                    if (!(dltUsername.equals(username) && dltRole.equals(role))) {
+                        sb.append(line).append("\n");
+                    }
+                }
+
+                fw = new FileWriter("userinfo.txt");
+                fw.write(sb.toString());
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                // Close the FileWriter
+                if (fw != null) {
+                    try {
+                        fw.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }
     }//GEN-LAST:event_btnAdminDeleteActionPerformed
 
     private void comboAdminRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminRoleActionPerformed
