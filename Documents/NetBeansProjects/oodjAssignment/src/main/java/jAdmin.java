@@ -982,7 +982,7 @@ public class jAdmin extends javax.swing.JFrame {
         {
             cFileHandling f = new cFileHandling();
             String str = role+";"+username+";"+password+";"+address+";"+postcode+";"+city+";"+state;
-            f.editSpecificList("userInfo.txt",username, str);
+            //f.editSpecificList("userInfo.txt",username, str);
             f.saveListToFile("userInfo.txt");
         }
     }//GEN-LAST:event_btnProfileEditActionPerformed

@@ -7,6 +7,16 @@
  *
  * @author Kwan Jun Wei
  */
-public class cDeliveryStaff{
-    int i;
+public class cDeliveryStaff extends cUser{
+    
+    public cDeliveryStaff(String username, String password){
+        super(username,password);
+    }
+    
+    public void updateDeliveryStatus(){
+        
+    }
+    
+    
+    
 }

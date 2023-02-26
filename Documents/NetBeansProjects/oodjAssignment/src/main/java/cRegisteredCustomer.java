@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -8,22 +12,32 @@
  * @author Kwan Jun Wei
  */
 public class cRegisteredCustomer extends cUser{
-    private String name;
     private String address;
+    private String postcode;
+    private String city;
+    private String state;
 
-    public cRegisteredCustomer(String username, String password, String address) {
+    public cRegisteredCustomer(String username, String password){
         super(username, password);
-        this.address = address;
     }
-
-    public String getName() {
-        return name;
+    
+    public void loadFile(){
+        ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
+        for (String eachString : userList) {
+            Scanner sc = new Scanner(eachString).useDelimiter(";");
+            String tempRole = sc.next();
+            String tempUsername = sc.next();
+            String tempPassword = sc.next();
+            if(tempUsername.equals(super.getUsername()))
+            {
+                this.address = sc.next();
+                this.postcode = sc.next();
+                this.city = sc.next();
+                this.state = sc.next();
+            }
+        }
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    
     public String getAddress() {
         return address;
     }
@@ -31,29 +45,55 @@ public class cRegisteredCustomer extends cUser{
     public void setAddress(String address) {
         this.address = address;
     }
-    
-     // Method to view all items in a category
-    public void viewItemsByCategory(cCategory category){
-        
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     // Method to modify the customer's own profile
-    public void modifyProfile(){
+    public void modifyProfile(String role, String username, String password, String address, String postcode, String city, String state){
+        this.setAddress(address);
+        this.setPostcode(postcode);
+        this.setCity(city);
+        this.setState(state);
         
-    }
-
-    // Method to view purchase history
-    public void viewPurchaseHistory(){
+        String userInfo = role+";"+username+";"+password+";"+this.getAddress()+";"+ this.getPostcode()+";"+this.getCity()+";"+this.getState();
         
-    }
-
-    // Method to search for items and place an order
-    public void placeOrder(){
+        cFileHandling f = new cFileHandling();
+        ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
+        for (int i=0; i<userList.size(); i++)
+        {
+            String[]fields = userList.get(i).split(";");
+            if(fields[1].equals(username))
+            {
+                userList.set(i,userInfo);
+                break;
+            }
+        }
         
-    }
-
-    // Method to make a payment
-    public void makePayment(){
-        
+        for(String eachString: userList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("userInfo.txt");
     }
 }

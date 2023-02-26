@@ -21,16 +21,22 @@ public class jDelivery extends javax.swing.JFrame {
     /**
      * Creates new form jDelivery
      */
+    
     public jDelivery() {
         initComponents();
-        
+        btnLoadTable.doClick();
     }
     
     private String username;
+    private String password;
     
     public void setUsername(String username){
         this.username=username;
         lblWelcome.setText("Welcome back "+this.username);
+    }
+    
+    public void setPassword(String password){
+        this.password=password;
     }
 
     /**
@@ -72,7 +78,15 @@ public class jDelivery extends javax.swing.JFrame {
             new String [] {
                 "Order ID", "Delivery Status", "Item Name", "Quantity", "cFeedback", "cName", "cAddress", "cPostcode", "cCity", "cState"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tableCustomerOrder);
 
         btnLoadTable.setText("Load Table");
@@ -240,11 +254,11 @@ public class jDelivery extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadTableActionPerformed
-        ArrayList<String> lines = cFileHandling.readFile("userInfo.txt");
+        ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
         ArrayList<String> order = cFileHandling.readFile("order.txt");
         DefaultTableModel objModel = (DefaultTableModel) tableCustomerOrder.getModel();
         objModel.setRowCount(0);
-        for(int i =0;i<order.size();i++)
+        for(int i =0;i<order.size();i++) // loop order text file
         {
             Scanner sc = new Scanner(order.get(i)).useDelimiter(";");
             String orderID = sc.next();
@@ -259,11 +273,16 @@ public class jDelivery extends javax.swing.JFrame {
             String deliveryStaff = sc.next();
             String deliveryStatus = sc.next();
             String haveFeedback = sc.next();
+            
+            ////// if(deliveryStaff.equals(username){
+            //////      only add into table 
+            ////// }
+            
             if(!deliveryStatus.equals("null"))
             {
-                for(int x = 0;x<lines.size();x++)
+                for(int x = 0;x<userList.size();x++) // loop userInfo text file to add customer shipment info (address,postcode,city,state)
                 {
-                    Scanner sc2 = new Scanner(lines.get(x)).useDelimiter(";");
+                    Scanner sc2 = new Scanner(userList.get(x)).useDelimiter(";");
                     sc2.next();
                     String username = sc2.next();
                     if(tempUsername.equals(username))
@@ -274,8 +293,8 @@ public class jDelivery extends javax.swing.JFrame {
                         String city = sc2.next();
                         String state = sc2.next();
                         objModel.addRow(new Object[]{orderID,deliveryStatus,tempItemName,tempItemQuantity,haveFeedback,username,address,postcode,city,state});
-                        comboDelivery.addItem(orderID);
-                        if(haveFeedback.equals("yes"))
+                        comboDelivery.addItem(orderID); // add orderID into comboDelivery for delivery staff to update delivery status
+                        if(haveFeedback.equals("yes")) // if got feedback then add orderID into comboFeedback
                         {
                             comboFeedback.addItem(orderID);
                         }
@@ -283,6 +302,7 @@ public class jDelivery extends javax.swing.JFrame {
                 }
             }
         }
+        // remove redundant item in comoboDelivery
         try
         {
             Set<String> seenValues = new HashSet<String>();
@@ -299,6 +319,7 @@ public class jDelivery extends javax.swing.JFrame {
                 }
             }
         }catch(Exception e){}
+        // remove redundant item in comboFeedback
         try
         {
             Set<String> seenValues = new HashSet<String>();
@@ -320,7 +341,7 @@ public class jDelivery extends javax.swing.JFrame {
     private void btnUpdateDeliveryStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateDeliveryStatusActionPerformed
         String tempStatus = "";
         DefaultTableModel objModel = (DefaultTableModel) tableCustomerOrder.getModel();
-        if(jRadioButton2.isSelected()||jRadioButton3.isSelected())
+        if(jRadioButton2.isSelected()||jRadioButton3.isSelected()) // check if radio button is selected
         {
             if(jRadioButton2.isSelected())
             {

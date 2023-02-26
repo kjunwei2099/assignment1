@@ -18,11 +18,15 @@ public class cUser {
     private boolean found = false;
     private boolean usernameFound = false;
     
+    public cUser(){}
+    
+    //contructor
     public cUser(String username, String password) {
         this.username = username;
         this.password = password;
     }
     
+    //creation of class obj method
     public void checkLogin(String filename){
         cFileHandling f = new cFileHandling();
         ArrayList<String> lines = cFileHandling.readFile(filename);
@@ -44,10 +48,12 @@ public class cUser {
         }
     }
     
+    //encapsulation
+    //getter
     public boolean getFound(){
         return found;
     }
-    
+    //setter
     public void setFoundFalse(){
         this.found = false;
     }
@@ -64,6 +70,10 @@ public class cUser {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
     public String getPassword() {
         return password;
     }

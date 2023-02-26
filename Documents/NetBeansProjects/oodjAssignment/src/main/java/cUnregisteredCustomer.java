@@ -7,6 +7,8 @@
  *
  * @author Kwan Jun Wei
  */
-public class cCustomer {
-    
+public class cUnregisteredCustomer extends cUser{
+    public void loadTable(){
+        
+    }
 }

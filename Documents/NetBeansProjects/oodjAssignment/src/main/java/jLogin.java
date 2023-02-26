@@ -221,32 +221,31 @@ public class jLogin extends javax.swing.JFrame {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         
-        cUser login = new cUser(username,password);
-        login.checkLogin("userInfo.txt");
+        cUser user = new cUser(username,password);
+        user.checkLogin("userInfo.txt"); // return true or false
         
-        if(login.getFound())
+        if(user.getFound()) // if true, can login
         {
             this.dispose();
-            if(login.getRole().equals("admin"))
+            if(user.getRole().equals("admin")) // login.getRole() inside 
             {
                 //Put admin dashboard
             }
-            else if(login.getRole().equals("customer"))
+            else if(user.getRole().equals("customer"))
             {
-                
                 jDashboard d = new jDashboard();
                 d.setVisible(true);
-                d.setRole("customer");
-                d.setUsername(login.getUsername());
+                d.setRole(user.getRole());
+                d.setUsername(user.getUsername());
+                d.setPassword(user.getPassword());
                 d.configuration();
             }
-            else if(login.getRole().equals("delivery"))
+            else if(user.getRole().equals("delivery"))
             {
                 jDelivery d = new jDelivery();
                 d.setVisible(true);
-                d.setUsername(login.getUsername());
+                //d.setUsername(user.getUsername());
             }
-            login.setFoundFalse();
         }
         else
         {

@@ -1,7 +1,7 @@
 beverages;Coca Cola;2.50;65
 food;Sugar;3.00;8
-electronics;Tablet;1400.00;57
+electronics;Tablet;1400.00;58
 beverages;Yakult;1.00;38
-food;Fish;15.00;43
+food;Fish;15.00;41
 electronics;Iphone 11;1200.00;46
 beverages;100 Plus;2.10;71

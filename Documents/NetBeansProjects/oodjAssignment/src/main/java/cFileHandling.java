@@ -14,8 +14,10 @@ import java.util.Scanner;
  * @author Kwan Jun Wei
  */
 public class cFileHandling {
+    // arrayList in cFileHandling for write file
     ArrayList<String> usersList = new ArrayList<String>();
     
+    // return an arrayList from the parameter (filename) 
     public static ArrayList<String>readFile(String filename){
         ArrayList<String> listOfStrings = new ArrayList<String>();
         try
@@ -40,6 +42,7 @@ public class cFileHandling {
         return listOfStrings;
     }
     
+    // read file and add to arrayList above then add a new string into arrayList
     public void addToList(String filename, String str){
         for(int i=0; i<readFile(filename).size();i++)
         {
@@ -48,28 +51,12 @@ public class cFileHandling {
         usersList.add(str);
     }
     
+    // add a new string into arrayList
     public void newList(String str){
         usersList.add(str);
     }
     
-    public void editSpecificList(String filename, String username, String str){
-        for(int i=0; i<readFile(filename).size();i++)
-        {
-            usersList.add(readFile(filename).get(i));
-        }
-        
-        for (int i=0; i<usersList.size(); i++)
-        {
-            String[]fields = usersList.get(i).split(";");
-            if(fields[1].equals(username))
-            {
-                System.out.println(str);
-                usersList.set(i,str);
-                break;
-            }
-        }
-    }
-    
+    // save arrayList above into text file and clear the arrayList above for further uses
     public void saveListToFile(String filename){
         try
         {
