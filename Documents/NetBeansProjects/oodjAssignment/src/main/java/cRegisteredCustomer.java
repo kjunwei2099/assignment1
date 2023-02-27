@@ -16,12 +16,17 @@ public class cRegisteredCustomer extends cUser{
     private String postcode;
     private String city;
     private String state;
-
-    public cRegisteredCustomer(String username, String password){
-        super(username, password);
+    
+    private ArrayList<String> orderList;
+    private ArrayList<String> itemList;
+    
+    public cRegisteredCustomer(){
+        orderList = cFileHandling.readFile("order.txt");
+        itemList = cFileHandling.readFile("item.txt");
     }
     
-    public void loadFile(){
+    public cRegisteredCustomer(String username, String password){
+        super(username, password);
         ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
         for (String eachString : userList) {
             Scanner sc = new Scanner(eachString).useDelimiter(";");
@@ -96,4 +101,30 @@ public class cRegisteredCustomer extends cUser{
         }
         f.saveListToFile("userInfo.txt");
     }
+    
+    public ArrayList<String> getOrderList(){
+        return orderList;
+    }
+    
+    public ArrayList<String> getItemList(){
+        return itemList;
+    }
+//    
+//    public static ArrayList<String>loadShop(){
+//        ArrayList<String> itemList = cFileHandling.readFile("item.txt");
+//        return itemList;
+//    }
+//    
+//    public void ArrayList<String>loadCart(){
+//        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
+//        for(String eachString: orderList){
+//            
+//        }
+//        return orderList;
+//    }
+//    
+//    public static ArrayList<String>loadHistory(){
+//        ArrayList<String> orderHistory = cFileHandling.readFile("order.txt");
+//        return orderHistory;
+//    }
 }

@@ -62,7 +62,8 @@ public class jDashboard extends javax.swing.JFrame {
         if (role.equals("customer")) {
             // use cUser class to get address, postcode, city, state
             cRegisteredCustomer user = new cRegisteredCustomer(username, password);
-            user.loadFile();
+            System.out.println(user.getItemList());
+            
             this.address = user.getAddress();
             this.postcode = user.getPostcode();
             this.city=user.getCity();
