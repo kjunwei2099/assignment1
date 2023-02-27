@@ -1,0 +1,4 @@
+delivery;qwer;qwer;;;;
+customer;asdf;asdf;5 Jalan Bukit Mewah 9/17;43000;Kajang;Selangor
+admin;zxcv;zxcv;;;;
+customer;1234;1234;10 Temengung;43200;Cheras;Selangor

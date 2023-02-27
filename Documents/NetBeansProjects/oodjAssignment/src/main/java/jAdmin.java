@@ -47,8 +47,7 @@ public class jAdmin extends javax.swing.JFrame {
      */
     
     public jAdmin() {
-        initComponents();
-        configuration();  
+        initComponents(); 
         loadRoles();
     }
     
@@ -1021,7 +1020,7 @@ public class jAdmin extends javax.swing.JFrame {
         // Create a cAdmin object
         cAdmin admin = new cAdmin();
 
-        admin.checkLogin("userinfo.txt");
+        boolean usernameExists = admin.saveUserInfo(Role, Username, Password);
 
         if (!ConPassword.equals(Password)) {
             JOptionPane.showConfirmDialog(null,"Password Incorrect!",
@@ -1029,25 +1028,21 @@ public class jAdmin extends javax.swing.JFrame {
             txtAdminPassword.setText("");
             txtAdminPassword2.setText("");
         }
-
-        else {
-            if ((!Username.equals(""))&&(!Password.equals(""))) {
-                if(!admin.getUsernameFound()) {
-                    String str = Role +";"+Username+";"+Password+";;;;";
-                    cFileHandling f = new cFileHandling();
-                    f.addToList("userInfo.txt", str);
-                    f.saveListToFile("userInfo.txt");
-                }
-                else {
-                    JOptionPane.showConfirmDialog(null,"The username have been taken, Please contact Administator for more information",
-                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            else {
+        
+        else if (Password.equals("") || Username.equals("")) {
                 JOptionPane.showConfirmDialog(null,"Kindly fill in all the blank field",
                     "No empty field allowed", JOptionPane.WARNING_MESSAGE);
             }
-
+        
+        else {
+            if (usernameExists) {
+                JOptionPane.showConfirmDialog(null,"The username have been taken, Please contact Administator for more information",
+                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                JOptionPane.showConfirmDialog(null,"User added!",
+                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
+                }
         }
     }//GEN-LAST:event_btnAdminSaveActionPerformed
 
