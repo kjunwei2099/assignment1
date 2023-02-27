@@ -61,51 +61,49 @@ public class jAdmin extends javax.swing.JFrame {
     }
     
     private void loadRoles() {
+        // Create the cAdmin object
+        cAdmin admin = new cAdmin();
+
+        // Get the distinct roles from cAdmin
         String[] roles = admin.getDistinctRoles();
+
+        // Set the model with the roles array
         comboAdminSearchRole.setModel(new javax.swing.DefaultComboBoxModel<>(roles));
         comboAdminSearchRole.insertItemAt("All", 0);
-        
+
+        // Set the initial selection to "All"
+        comboAdminSearchRole.setSelectedIndex(0);
+
         // Clear the table
         DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
-        
+        model.setRowCount(0);
 
-        // Get user info from cAdmin
-        cAdmin admin = new cAdmin();
-        List<String[]> userInfoList = admin.getUserInfoList();
-        
         // Add user info to the table based on selected role      
         comboAdminSearchRole.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-               if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
                     String selectedRole = (String) comboAdminSearchRole.getSelectedItem();
                     DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
                     model.setRowCount(0);
 
                     // Get user info from cAdmin
-                    cAdmin admin = new cAdmin();
                     List<String[]> userInfoList = admin.getUserInfoList();
 
                     // Add user info to the table based on selected role
-                    if (!selectedRole.equals("All")) {
-                        for (String[] userInfo : userInfoList) {
-                            String role = userInfo[0];
-                            String username = userInfo[1];
-                            if (selectedRole.equals(role)) {
-                                model.addRow(new Object[]{role, username});
-                            }
-                        }
-                    } else {
-                        for (String[] userInfo : userInfoList) {
-                            String role = userInfo[0];
-                            String username = userInfo[1];
+                    for (String[] userInfo : userInfoList) {
+                        String role = userInfo[0];
+                        String username = userInfo[1];
+                        if (selectedRole.equals("All") || selectedRole.equals(role)) {
                             model.addRow(new Object[]{role, username});
                         }
                     }
+                            
                 }
             }
         });    
     }
+
  
     public void configuration(){
         
@@ -147,7 +145,6 @@ public class jAdmin extends javax.swing.JFrame {
             }
         }
         
-        btnAdminLoadTable.doClick();
         
     }
     
@@ -169,7 +166,6 @@ public class jAdmin extends javax.swing.JFrame {
         txtAdminSearch = new javax.swing.JTextField();
         jScrollPane6 = new javax.swing.JScrollPane();
         tableAdminUser1 = new javax.swing.JTable();
-        btnAdminLoadTable = new javax.swing.JToggleButton();
         txtAdminPassword = new javax.swing.JPasswordField();
         jLabel25 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
@@ -191,7 +187,6 @@ public class jAdmin extends javax.swing.JFrame {
         btnAdminShopDelete = new javax.swing.JButton();
         lblShopPrice = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        btnShopLoadTable = new javax.swing.JButton();
         btnAdminShopAdd = new javax.swing.JButton();
         spinnerAdminShopStock = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
@@ -200,6 +195,7 @@ public class jAdmin extends javax.swing.JFrame {
         txtAdminAddProduct1 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
         panelHistory = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tablePurchaseHistory = new javax.swing.JTable();
@@ -256,6 +252,7 @@ public class jAdmin extends javax.swing.JFrame {
 
         jLabel11.setText("Filter By");
 
+        comboAdminSearchRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All" }));
         comboAdminSearchRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboAdminSearchRoleActionPerformed(evt);
@@ -277,13 +274,6 @@ public class jAdmin extends javax.swing.JFrame {
             }
         ));
         jScrollPane6.setViewportView(tableAdminUser1);
-
-        btnAdminLoadTable.setText("Load Table");
-        btnAdminLoadTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAdminLoadTableActionPerformed(evt);
-            }
-        });
 
         jLabel25.setText("Password: ");
 
@@ -327,7 +317,7 @@ public class jAdmin extends javax.swing.JFrame {
         panelRole.setLayout(panelRoleLayout);
         panelRoleLayout.setHorizontalGroup(
             panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRoleLayout.createSequentialGroup()
+            .addGroup(panelRoleLayout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel30)
@@ -344,23 +334,23 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(txtAdminPassword2)
                     .addComponent(comboAdminRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtAdminUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
                 .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAdminDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelRoleLayout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addGap(18, 18, 18)
-                        .addComponent(comboAdminSearchRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelRoleLayout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtAdminSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGroup(panelRoleLayout.createSequentialGroup()
-                            .addComponent(btnAdminLoadTable)
-                            .addGap(90, 90, 90)
-                            .addComponent(btnAdminDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(176, 176, 176))
+                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelRoleLayout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtAdminSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelRoleLayout.createSequentialGroup()
+                                .addComponent(jLabel11)
+                                .addGap(18, 18, 18)
+                                .addComponent(comboAdminSearchRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(161, 161, 161))
         );
         panelRoleLayout.setVerticalGroup(
             panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -388,7 +378,7 @@ public class jAdmin extends javax.swing.JFrame {
                             .addComponent(btnAdminSave)
                             .addComponent(btnAdminClear)))
                     .addGroup(panelRoleLayout.createSequentialGroup()
-                        .addGap(50, 50, 50)
+                        .addGap(42, 42, 42)
                         .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
                             .addComponent(comboAdminSearchRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -397,12 +387,10 @@ public class jAdmin extends javax.swing.JFrame {
                             .addComponent(jLabel15)
                             .addComponent(txtAdminSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdminDelete)
-                            .addComponent(btnAdminLoadTable))))
-                .addContainerGap(73, Short.MAX_VALUE))
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(btnAdminDelete)
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
         panel.addTab("User Management", panelRole);
@@ -417,7 +405,7 @@ public class jAdmin extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tableAdminShop);
         if (tableAdminShop.getColumnModel().getColumnCount() > 0) {
-            tableAdminShop.getColumnModel().getColumn(0).setMaxWidth(400);
+            tableAdminShop.getColumnModel().getColumn(2).setMaxWidth(300);
             tableAdminShop.getColumnModel().getColumn(3).setMaxWidth(80);
         }
 
@@ -444,13 +432,6 @@ public class jAdmin extends javax.swing.JFrame {
 
         jLabel8.setText("Stock:");
 
-        btnShopLoadTable.setText("Load Table");
-        btnShopLoadTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnShopLoadTableActionPerformed(evt);
-            }
-        });
-
         btnAdminShopAdd.setText("Add Item");
         btnAdminShopAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -468,6 +449,8 @@ public class jAdmin extends javax.swing.JFrame {
 
         jLabel4.setText("Search:");
 
+        jLabel17.setText("Filter by:");
+
         javax.swing.GroupLayout panelProductLayout = new javax.swing.GroupLayout(panelProduct);
         panelProduct.setLayout(panelProductLayout);
         panelProductLayout.setHorizontalGroup(
@@ -476,68 +459,51 @@ public class jAdmin extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblShopPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(panelProductLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelProductLayout.createSequentialGroup()
+                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelProductLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addGap(52, 52, 52)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(spinnerAdminShopStock, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelProductLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtAdminAddPrice)))
+                        .addGap(96, 96, 96))
+                    .addGroup(panelProductLayout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addComponent(btnAdminShopAdd)
+                        .addGap(103, 103, 103)
+                        .addComponent(btnAdminShopDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelProductLayout.createSequentialGroup()
-                        .addGap(80, 80, 80)
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboAdminCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addGap(50, 50, 50)
+                            .addComponent(jLabel2)
+                            .addComponent(comboAdminCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(85, 85, 85)
                         .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(txtAdminShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(panelProductLayout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(75, Short.MAX_VALUE))
-            .addGroup(panelProductLayout.createSequentialGroup()
-                .addGap(175, 175, 175)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8))
-                .addGap(28, 28, 28)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spinnerAdminShopStock, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelProductLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtAdminAddPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(139, 139, 139)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAdminShopDelete)
-                    .addComponent(btnAdminShopAdd)
-                    .addComponent(btnShopLoadTable, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40))
         );
         panelProductLayout.setVerticalGroup(
             panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelProductLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboAdminCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtAdminShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelProductLayout.createSequentialGroup()
-                        .addComponent(btnAdminShopAdd)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAdminShopDelete))
-                    .addGroup(panelProductLayout.createSequentialGroup()
-                        .addGap(2, 2, 2)
+                        .addGap(110, 110, 110)
                         .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelProductLayout.createSequentialGroup()
-                                .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(59, 59, 59)
-                                .addComponent(btnShopLoadTable))
+                            .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panelProductLayout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(18, 18, 18)
@@ -545,14 +511,28 @@ public class jAdmin extends javax.swing.JFrame {
                                     .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                         .addComponent(jLabel3)
                                         .addComponent(txtAdminAddPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel6))
-                                .addGap(18, 18, 18)
-                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(spinnerAdminShopStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(panelProductLayout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(jLabel8)))))))
-                .addGap(27, 27, 27)
+                                    .addComponent(jLabel6))))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(spinnerAdminShopStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))
+                        .addGap(38, 38, 38)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAdminShopDelete)
+                            .addComponent(btnAdminShopAdd)))
+                    .addGroup(panelProductLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboAdminCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAdminShopSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblShopPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(63, 63, 63))
         );
@@ -596,9 +576,9 @@ public class jAdmin extends javax.swing.JFrame {
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHistoryLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 950, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 2675, Short.MAX_VALUE))
                     .addGroup(panelHistoryLayout.createSequentialGroup()
-                        .addGap(24, 881, Short.MAX_VALUE)
+                        .addGap(24, 2606, Short.MAX_VALUE)
                         .addComponent(btnPurchaseHistoryRefresh))
                     .addGroup(panelHistoryLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
@@ -636,7 +616,7 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(comboAdminHistoryOrderID2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboAdminHistoryDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(177, Short.MAX_VALUE))
+                .addContainerGap(194, Short.MAX_VALUE))
         );
 
         panel.addTab("Purchase History", panelHistory);
@@ -784,7 +764,7 @@ public class jAdmin extends javax.swing.JFrame {
                         .addComponent(label123)
                         .addComponent(txtAdminItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblCartItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(panelCustomerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCartTotalItem)
                     .addComponent(txtAdminItemCatagory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -898,7 +878,7 @@ public class jAdmin extends javax.swing.JFrame {
                                                     .addComponent(txtCity)
                                                     .addComponent(txtState, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                                                     .addComponent(txtPostcode))))))))
-                        .addGap(0, 76, Short.MAX_VALUE))
+                        .addGap(0, 1801, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCustomerProfileLayout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnProfileEdit)
@@ -950,7 +930,7 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(txtState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(52, 52, 52)
                 .addComponent(lblProfileStatus)
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addContainerGap(251, Short.MAX_VALUE))
         );
 
         panel.addTab("Profile", panelCustomerProfile);
@@ -1341,10 +1321,6 @@ public class jAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_comboAdminRoleActionPerformed
 
     
-    private void btnAdminLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminLoadTableActionPerformed
-        
-    }//GEN-LAST:event_btnAdminLoadTableActionPerformed
-
     private void txtAdminSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdminSearchKeyPressed
         
         // if txtShopSearch is keyed in with some value, then the table will updated based on the value       
@@ -1356,70 +1332,9 @@ public class jAdmin extends javax.swing.JFrame {
         tr.setRowFilter(RowFilter.regexFilter(txtAdminSearch.getText().trim()));
     }//GEN-LAST:event_txtAdminSearchKeyPressed
 
-    private void comboAdminSearchRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminSearchRoleActionPerformed
-
-    }//GEN-LAST:event_comboAdminSearchRoleActionPerformed
-
     private void btnAdminShopAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminShopAddActionPerformed
 
     }//GEN-LAST:event_btnAdminShopAddActionPerformed
-
-    private void btnShopLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopLoadTableActionPerformed
-        File item = new File("item.txt");
-        DefaultTableModel objModel = (DefaultTableModel) tableAdminShop.getModel();
-        objModel.setRowCount(0);
-        try {
-            FileReader fr = new FileReader(item);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-
-            while (line != null) {
-                String[] dataRow = line.split(";");
-                objModel.addRow(dataRow);
-                line = br.readLine();
-            }
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Add an "All" option to show all categories
-        comboAdminCategory.addItem("All");
-
-        // Get unique category values from item.txt
-        Set<String> categories = new HashSet<>();
-
-        //get category value from item.txt
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("item.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(";");
-                String category = data[0];
-                categories.add(category);
-            }
-            br.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        comboAdminCategory.addActionListener(e -> {
-            String selectedCategory = comboAdminCategory.getSelectedItem().toString();
-            if (selectedCategory.equals("All")) {
-                // Show all rows in table
-                tableAdminShop.setRowSorter(null);
-            } else {
-                // Show only rows with selected category
-                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(objModel);
-                sorter.setRowFilter(RowFilter.regexFilter(selectedCategory, 0));
-                tableAdminShop.setRowSorter(sorter);
-            }
-        });
-
-        for (String category : categories) {
-            comboAdminCategory.addItem(category);
-        }
-    }//GEN-LAST:event_btnShopLoadTableActionPerformed
 
     private void btnAdminShopDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminShopDeleteActionPerformed
 
@@ -1435,6 +1350,10 @@ public class jAdmin extends javax.swing.JFrame {
     private void comboAdminCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminCategoryActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_comboAdminCategoryActionPerformed
+
+    private void comboAdminSearchRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminSearchRoleActionPerformed
+
+    }//GEN-LAST:event_comboAdminSearchRoleActionPerformed
   
     /**
      * @param args the command line arguments
@@ -1459,7 +1378,6 @@ public class jAdmin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdminClear;
     private javax.swing.JButton btnAdminDelete;
-    private javax.swing.JToggleButton btnAdminLoadTable;
     private javax.swing.JButton btnAdminSave;
     private javax.swing.JButton btnAdminShopAdd;
     private javax.swing.JButton btnAdminShopDelete;
@@ -1471,7 +1389,6 @@ public class jAdmin extends javax.swing.JFrame {
     private javax.swing.JButton btnProfileEdit;
     private javax.swing.JButton btnProfileLogout;
     private javax.swing.JButton btnPurchaseHistoryRefresh;
-    private javax.swing.JButton btnShopLoadTable;
     private javax.swing.JComboBox<String> comboAdminCategory;
     private javax.swing.JComboBox<String> comboAdminHistoryDelivery;
     private javax.swing.JComboBox<String> comboAdminHistoryOrderID2;
@@ -1485,6 +1402,7 @@ public class jAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;

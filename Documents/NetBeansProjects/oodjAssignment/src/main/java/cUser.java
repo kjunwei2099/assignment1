@@ -10,6 +10,7 @@ import java.util.Scanner;
 /**
  *
  * @author Kwan Jun Wei
+ * @author calvinlim
  */
 public class cUser {
     private String role;
@@ -46,6 +47,10 @@ public class cUser {
                 }
             }
         }
+    }
+    
+    public void readItem(String Catagory, String ItemName, int Stock) {
+        
     }
     
     //encapsulation
