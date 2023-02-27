@@ -92,12 +92,6 @@ public class jAdmin extends javax.swing.JFrame {
                 catch(Exception e){}
             }
         }
-        else
-        {
-            panel.remove(panelCustomer);
-            panel.remove(panelHistory); 
-            panel.remove(panelCustomerProfile); 
-        }
     }
     
     /**
@@ -857,9 +851,9 @@ public class jAdmin extends javax.swing.JFrame {
                             .addGroup(panelProductLayout.createSequentialGroup()
                                 .addComponent(txtAdminAddProduct1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtAdminAddPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3))
+                                .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtAdminAddPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(panelProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panelProductLayout.createSequentialGroup()
                                         .addGap(18, 18, 18)
