@@ -1,4 +1,6 @@
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +31,7 @@ import javax.swing.table.TableRowSorter;
 /**
  *
  * @author Kwan Jun Wei
+ * @author calvinlim
  */
 public class jAdmin extends javax.swing.JFrame {
     private String role="";
@@ -37,13 +41,15 @@ public class jAdmin extends javax.swing.JFrame {
     private String postcode;
     private String city;
     private String state;
+    private cAdmin admin = new cAdmin();
     /**
      * Creates new form jDashboard
      */
     
     public jAdmin() {
         initComponents();
-        configuration();        
+        configuration();  
+        loadRoles();
     }
     
     public void setRole(String role){
@@ -53,8 +59,56 @@ public class jAdmin extends javax.swing.JFrame {
     public void setUsername(String username){
         this.username = username;
     }
+    
+    private void loadRoles() {
+        String[] roles = admin.getDistinctRoles();
+        comboAdminSearchRole.setModel(new javax.swing.DefaultComboBoxModel<>(roles));
+        comboAdminSearchRole.insertItemAt("All", 0);
+        
+        // Clear the table
+        DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
+        
+
+        // Get user info from cAdmin
+        cAdmin admin = new cAdmin();
+        List<String[]> userInfoList = admin.getUserInfoList();
+        
+        // Add user info to the table based on selected role      
+        comboAdminSearchRole.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+               if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String selectedRole = (String) comboAdminSearchRole.getSelectedItem();
+                    DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
+                    model.setRowCount(0);
+
+                    // Get user info from cAdmin
+                    cAdmin admin = new cAdmin();
+                    List<String[]> userInfoList = admin.getUserInfoList();
+
+                    // Add user info to the table based on selected role
+                    if (!selectedRole.equals("All")) {
+                        for (String[] userInfo : userInfoList) {
+                            String role = userInfo[0];
+                            String username = userInfo[1];
+                            if (selectedRole.equals(role)) {
+                                model.addRow(new Object[]{role, username});
+                            }
+                        }
+                    } else {
+                        for (String[] userInfo : userInfoList) {
+                            String role = userInfo[0];
+                            String username = userInfo[1];
+                            model.addRow(new Object[]{role, username});
+                        }
+                    }
+                }
+            }
+        });    
+    }
  
     public void configuration(){
+        
         if(role.equals("customer"))
         {
             panel.add("Cart",panelCustomer);
@@ -96,6 +150,8 @@ public class jAdmin extends javax.swing.JFrame {
         btnAdminLoadTable.doClick();
         
     }
+    
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1284,54 +1340,9 @@ public class jAdmin extends javax.swing.JFrame {
 
     }//GEN-LAST:event_comboAdminRoleActionPerformed
 
+    
     private void btnAdminLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminLoadTableActionPerformed
-        DefaultTableModel objModel = (DefaultTableModel) tableAdminUser1.getModel();
-        objModel.setRowCount(0);
         
-        ArrayList<String> userList = cFileHandling.readFile("userinfo.txt");
-        for (String eachString: userList) {
-            Scanner sc = new Scanner(eachString).useDelimiter(";");
-            String role = sc.next();
-            String username = sc.next();
-            String password = sc.next(); // assuming password is the third field
-            objModel.addRow(new Object[]{role, username, password});
-        }
-
-        // Add an "All" option to show all roles
-        comboAdminSearchRole.addItem("All");
-
-        // Get unique role values from userinfo.txt
-        Set<String> roles = new HashSet<>();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("userinfo.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(";");
-                String role = data[0];
-                roles.add(role);
-            }
-            br.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        comboAdminSearchRole.addActionListener(e -> {
-            String selectedRole = comboAdminSearchRole.getSelectedItem().toString();
-            if (selectedRole.equals("All")) {
-                // Show all rows in table
-                tableAdminUser1.setRowSorter(null);
-            } else {
-                // Show only rows with selected role
-                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(objModel);
-                sorter.setRowFilter(RowFilter.regexFilter(selectedRole, 0));
-                tableAdminUser1.setRowSorter(sorter);
-            }
-        });
-
-        for (String role : roles) {
-            comboAdminSearchRole.addItem(role);
-        }
     }//GEN-LAST:event_btnAdminLoadTableActionPerformed
 
     private void txtAdminSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdminSearchKeyPressed
