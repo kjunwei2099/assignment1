@@ -1,7 +1,25 @@
-beverages;Coca Cola;2.50;65
-food;Sugar;3.00;8
-electronics;Tablet;1400.00;58
-beverages;Yakult;1.00;38
-food;Fish;15.00;41
-electronics;Iphone 11;1200.00;46
-beverages;100 Plus;2.10;71
+C001;Alex Rider;25.00;100
+C001;Children of the Lamp Series;59.99;35
+C001;Code Talker;37.80;62
+C001;Deeper;56.70;46
+C001;Diamond Brothers Mysteries;28.99;47
+C002;Abel's Island;63.15;50
+C002;Alfred Kropp Series;75.70;62
+C002;Boxcar Children;73.55;74
+C002;Charlie and the Chocolate Factory;51.44;71
+C002;Charlie Bone Series;62.99;67
+C003;A Whole Nother Story;78.62;65
+C003;Chasing Vermeer;62.99;74
+C003;Hardy Boys Series;67.99;39
+C003;Nate the Great;58.99;36
+C003;The Ghost Mystery Series;84.99;33
+C004;Dragon Rider;67.87;74
+C004;Fablehaven Series;49.99;44
+C004;Grey Griffins Series;45.99;47
+C004;Inkworld Trilogy;48.99;39
+C004;Lord of the Rings;54.99;64
+C005;Goosebumps Series;48.88;57
+C005;Nocturne;74.49;55
+C005;The Ink Drinker;73.99;27
+C005;Crooked Hills;37.33;52
+C005;Aldwyns Academy;62.88;76

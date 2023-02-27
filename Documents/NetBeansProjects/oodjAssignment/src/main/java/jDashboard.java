@@ -37,7 +37,7 @@ public class jDashboard extends javax.swing.JFrame {
     private String postcode;
     private String city;
     private String state;
-
+    private cRegisteredCustomer customer = new cRegisteredCustomer();
     /**
      * Creates new form jDashboard
      */
@@ -61,13 +61,15 @@ public class jDashboard extends javax.swing.JFrame {
     public void configuration() {
         if (role.equals("customer")) {
             // use cUser class to get address, postcode, city, state
-            cRegisteredCustomer user = new cRegisteredCustomer(username, password);
-            System.out.println(user.getItemList());
+            customer = new cRegisteredCustomer(username, password);
+            customer.loadOrderList();
+            customer.getOrderList();
             
-            this.address = user.getAddress();
-            this.postcode = user.getPostcode();
-            this.city=user.getCity();
-            this.state=user.getState();
+            this.address = customer.getAddress();
+            this.postcode = customer.getPostcode();
+            this.city=customer.getCity();
+            this.state=customer.getState();
+            
             // set profile txtField for user to update profile
             lblUsername.setText(username);
             txtAddress.setText(address);

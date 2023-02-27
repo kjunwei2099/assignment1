@@ -20,10 +20,7 @@ public class cRegisteredCustomer extends cUser{
     private ArrayList<String> orderList;
     private ArrayList<String> itemList;
     
-    public cRegisteredCustomer(){
-        orderList = cFileHandling.readFile("order.txt");
-        itemList = cFileHandling.readFile("item.txt");
-    }
+    public cRegisteredCustomer(){}
     
     public cRegisteredCustomer(String username, String password){
         super(username, password);
@@ -100,6 +97,14 @@ public class cRegisteredCustomer extends cUser{
             f.newList(eachString);
         }
         f.saveListToFile("userInfo.txt");
+    }
+    
+    public void loadOrderList(){
+        this.orderList = cFileHandling.readFile("order.txt");
+    }
+    
+    public void loadItemList(){
+        this.orderList = cFileHandling.readFile("item.txt");
     }
     
     public ArrayList<String> getOrderList(){
