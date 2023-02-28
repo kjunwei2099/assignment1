@@ -779,7 +779,7 @@ public class jDashboard extends javax.swing.JFrame {
         
         int row = tableShop.convertRowIndexToModel(selectedViewIndex);
         // check if role is customer(registered) or not customer(not registered)
-        if (!role.equals("customer")) {
+        if (!role.equals("Customer")) {
             if (JOptionPane.showConfirmDialog(null, "Login to Continue?", "Please Login to Cart", JOptionPane.PLAIN_MESSAGE) == 0) {
                 this.dispose();
                 jLogin login = new jLogin();
