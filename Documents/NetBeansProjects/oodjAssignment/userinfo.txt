@@ -3,5 +3,4 @@ Customer;asdf;asdf;5 Jalan Bukit Mewah 9/17;43000;Kajang;Selangor
 Administrator;zxcv;zxcv;;;;
 Customer;1234;1234;10 Temengung;43200;Cheras;Selangor
 Administrator;fdsa;zxcv
-Administrator;rewq;zxcv
 Delivery Staff;zxcs;dsa

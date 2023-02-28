@@ -1,26 +1,11 @@
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 /*
@@ -49,6 +34,7 @@ public class jAdmin extends javax.swing.JFrame {
     public jAdmin() {
         initComponents(); 
         loadRoles();
+        updateAdminUserTable();
     }
     
     public void setRole(String role){
@@ -111,7 +97,10 @@ public class jAdmin extends javax.swing.JFrame {
                             
                 }
             }
-        });    
+        });
+        
+        updateAdminUserTable();
+        
     }
 
 
@@ -961,39 +950,26 @@ public class jAdmin extends javax.swing.JFrame {
         if (selectedrow == -1) {
             JOptionPane.showMessageDialog(null, "Please select a user to delete!");
         } else {
-            if (JOptionPane.showConfirmDialog(null,"Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE) == 0) {
+            if (JOptionPane.showConfirmDialog(null, "Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE) == 0) {
                 DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
                 String role = (String) model.getValueAt(selectedrow, 0);
                 String username = (String) model.getValueAt(selectedrow, 1);
-                model.removeRow(selectedrow);
 
-                File inputFile = new File("userinfo.txt");
-                File tempFile = new File("userinfo_temp.txt");
+                // Create the cAdmin object
+                cAdmin admin = new cAdmin();
 
-                try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        String[] info = line.split(";");
-                        String dltRole = info[0].trim();
-                        String dltUsername = info[1].trim();
+                // Delete the user profile through cUser
+                boolean success = admin.deleteUserInfo(role, username);
 
-                        if (!(dltUsername.equals(username) && dltRole.equals(role))) {
-                            writer.write(line + System.getProperty("line.separator"));
-                        }
-                    }
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                // Delete the original file and rename the temporary file
-                if (inputFile.delete()) {
-                    tempFile.renameTo(inputFile);
+                if (success) {
+                    model.removeRow(selectedrow);
+                    JOptionPane.showMessageDialog(null, "User profile deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to delete user profile!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
+        updateAdminUserTable();
     }//GEN-LAST:event_btnAdminDeleteActionPerformed
 
     private void btnAdminClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminClearActionPerformed
@@ -1025,12 +1001,12 @@ public class jAdmin extends javax.swing.JFrame {
         
         else if (usernameExists) {
             JOptionPane.showConfirmDialog(null,"User added!",
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                "Success", JOptionPane.INFORMATION_MESSAGE);
         } 
         
         else {
             JOptionPane.showConfirmDialog(null,"The username already exists, please enter a different username",
-                "User Exists", JOptionPane.INFORMATION_MESSAGE);
+                "User Exists", JOptionPane.ERROR_MESSAGE);
         }
         updateAdminUserTable();
 
