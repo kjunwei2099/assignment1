@@ -264,6 +264,8 @@ public class jLogin extends javax.swing.JFrame {
         {
             if(!login.getUsernameFound())
             {
+                //If username not found in database
+                //save the list into database
                 String str = "customer;"+username+";"+password+";;;;";
                 cFileHandling f = new cFileHandling();
                 f.addToList("userInfo.txt", str);
@@ -272,6 +274,8 @@ public class jLogin extends javax.swing.JFrame {
             }
             else
             {
+                //if username found in database
+                //notice user that username existed
                 lblStatus.setText("Status: Username Existed!");
                 txtRUsername.setText("");
                 txtRPassword.setText("");
@@ -279,6 +283,7 @@ public class jLogin extends javax.swing.JFrame {
         }
         else
         {
+            //check is there any empty blank textfield
             lblStatus.setText("Status: Please fill in every field!");
         }
     }//GEN-LAST:event_btnRegisterActionPerformed
