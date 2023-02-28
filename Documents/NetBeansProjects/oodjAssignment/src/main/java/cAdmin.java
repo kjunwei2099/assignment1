@@ -4,6 +4,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -81,6 +84,38 @@ public class cAdmin {
             return false;
         }
     }
+    
+        public boolean deleteUserInfo(String role, String username) {
+        File inputFile = new File("userinfo.txt");
+        File tempFile = new File("userinfo_temp.txt");
 
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] info = line.split(";");
+                String dltRole = info[0].trim();
+                String dltUsername = info[1].trim();
+
+                if (!(dltUsername.equals(username) && dltRole.equals(role))) {
+                    writer.write(line + System.getProperty("line.separator"));
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        // Delete the original file and rename the temporary file
+        if (inputFile.delete()) {
+            tempFile.renameTo(inputFile);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }
