@@ -249,7 +249,6 @@ public class jLogin extends javax.swing.JFrame {
                 d.setUsername(user.getUsername());
                 d.setPassword(user.getPassword());
                 d.configuration();
-                //d.setUsername(user.getUsername());
             }
         }
         else

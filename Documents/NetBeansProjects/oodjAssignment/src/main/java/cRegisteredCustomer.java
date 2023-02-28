@@ -25,7 +25,7 @@ public class cRegisteredCustomer extends cUser{
     
     public cRegisteredCustomer(String username, String password){
         super(username, password);
-        ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
+        ArrayList<String> userList = cFileHandling.readFile("userinfo.txt");
         for (String eachString : userList) {
             String[]fields = eachString.split(";");
             String tempUsername = fields[1];
@@ -81,7 +81,7 @@ public class cRegisteredCustomer extends cUser{
         String userInfo = role+";"+username+";"+password+";"+this.getAddress()+";"+ this.getPostcode()+";"+this.getCity()+";"+this.getState();
         
         cFileHandling f = new cFileHandling();
-        ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
+        ArrayList<String> userList = cFileHandling.readFile("userinfo.txt");
         for (int i=0; i<userList.size(); i++)
         {
             String[]fields = userList.get(i).split(";");
@@ -95,7 +95,7 @@ public class cRegisteredCustomer extends cUser{
         for(String eachString: userList){
             f.newList(eachString);
         }
-        f.saveListToFile("userInfo.txt");
+        f.saveListToFile("userinfo.txt");
     }
     
     public void loadOrderList(){

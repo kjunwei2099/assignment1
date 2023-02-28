@@ -43,7 +43,7 @@ public class cDeliveryStaff extends cUser{
     }
     
     public void loadUserList(){
-        this.userList = cFileHandling.readFile("userInfo.txt");
+        this.userList = cFileHandling.readFile("userinfo.txt");
     }
     
     public ArrayList<String> getUserList(){
