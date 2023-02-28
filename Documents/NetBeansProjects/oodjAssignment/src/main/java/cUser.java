@@ -49,10 +49,6 @@ public class cUser {
         }
     }
     
-    public void readItem(String Catagory, String ItemName, int Stock) {
-        
-    }
-    
     //encapsulation
     //getter
     public boolean getFound(){
