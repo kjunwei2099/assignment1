@@ -227,12 +227,12 @@ public class jLogin extends javax.swing.JFrame {
         if(user.getFound()) // if true, can login
         {
             this.dispose();
-            if(user.getRole().equals("admin")) // login.getRole() inside 
+            if(user.getRole().equals("Administrator")) // login.getRole() inside 
             {
                 jAdmin a = new jAdmin();
                 a.setVisible(true);
             }
-            else if(user.getRole().equals("customer"))
+            else if(user.getRole().equals("Customer"))
             {
                 jDashboard d = new jDashboard();
                 d.setVisible(true);
@@ -241,7 +241,7 @@ public class jLogin extends javax.swing.JFrame {
                 d.setPassword(user.getPassword());
                 d.configuration();
             }
-            else if(user.getRole().equals("delivery"))
+            else if(user.getRole().equals("Delivery"))
             {
                 jDelivery d = new jDelivery();
                 d.setVisible(true);

@@ -59,6 +59,17 @@ public class jAdmin extends javax.swing.JFrame {
         this.username = username;
     }
     
+    private void updateAdminUserTable() {
+    cAdmin admin = new cAdmin();
+    List<String[]> userInfoList = admin.getUserInfoList();
+    DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
+    model.setRowCount(0);
+    for (String[] userInfo : userInfoList) {
+        Object[] row = {userInfo[0], userInfo[1]};
+        model.addRow(row);
+    }
+}
+    
     private void loadRoles() {
         // Create the cAdmin object
         cAdmin admin = new cAdmin();
@@ -1005,23 +1016,24 @@ public class jAdmin extends javax.swing.JFrame {
                 "Please re-enter password", JOptionPane.ERROR_MESSAGE);
             txtAdminPassword.setText("");
             txtAdminPassword2.setText("");
-        }
+        } 
         
         else if (Password.equals("") || Username.equals("")) {
-                JOptionPane.showConfirmDialog(null,"Kindly fill in all the blank field",
-                    "No empty field allowed", JOptionPane.WARNING_MESSAGE);
-            }
+            JOptionPane.showConfirmDialog(null,"Kindly fill in all the blank field",
+                "No empty field allowed", JOptionPane.WARNING_MESSAGE);
+        } 
+        
+        else if (usernameExists) {
+            JOptionPane.showConfirmDialog(null,"User added!",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+        } 
         
         else {
-            if (usernameExists) {
-                JOptionPane.showConfirmDialog(null,"The username have been taken, Please contact Administator for more information",
-                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
-            }
-            else {
-                JOptionPane.showConfirmDialog(null,"User added!",
-                        "Sucess", JOptionPane.ERROR_MESSAGE);
-                }
+            JOptionPane.showConfirmDialog(null,"The username already exists, please enter a different username",
+                "User Exists", JOptionPane.INFORMATION_MESSAGE);
         }
+        updateAdminUserTable();
+
     }//GEN-LAST:event_btnAdminSaveActionPerformed
 
     private void txtAdminSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdminSearchKeyPressed

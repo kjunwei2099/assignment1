@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -10,13 +11,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 /**
  *
  * @author calvinlim
  */
 
-
 public class cAdmin {
+    // Reading the userinfo.txt file and storing the data in the userInfoList.
     private List<String[]> userInfoList;
 
     public cAdmin() {
@@ -36,7 +38,14 @@ public class cAdmin {
     public List<String[]> getUserInfoList() {
         return userInfoList;
     }
-    
+
+    /**
+     * Read the file line by line, split each line into an array of strings, and add
+     * the first element
+     * of each array to a set
+     * 
+     * @return An array of strings.
+     */
     public String[] getDistinctRoles() {
         Set<String> roles = new HashSet<>();
         try (BufferedReader br = new BufferedReader(new FileReader("userinfo.txt"))) {
@@ -50,7 +59,7 @@ public class cAdmin {
         }
         return roles.toArray(new String[0]);
     }
-    
+
     public boolean saveUserInfo(String role, String username, String password) {
         // Check if the username already exists in the file
         for (String[] userInfo : userInfoList) {
@@ -59,13 +68,13 @@ public class cAdmin {
                 return false;
             }
         }
-        
+
         // Open the userinfo.txt file for writing
         try (FileWriter writer = new FileWriter("userinfo.txt", true)) {
             // Write the user information to the file
-            writer.write(role + "," + username + "," + password + "\n");
+            writer.write(role + ";" + username + ";" + password + "\n");
             // Add the new user info to userInfoList
-            userInfoList.add(new String[] {role, username, password});
+            userInfoList.add(new String[] { role, username, password });
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,5 +82,5 @@ public class cAdmin {
         }
     }
 
-}
 
+}
