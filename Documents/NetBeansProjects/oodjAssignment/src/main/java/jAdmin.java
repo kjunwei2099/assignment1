@@ -1,26 +1,11 @@
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 /*
@@ -49,6 +34,7 @@ public class jAdmin extends javax.swing.JFrame {
     public jAdmin() {
         initComponents(); 
         loadRoles();
+        updateAdminUserTable();
     }
     
     public void setRole(String role){
@@ -58,6 +44,17 @@ public class jAdmin extends javax.swing.JFrame {
     public void setUsername(String username){
         this.username = username;
     }
+    
+    private void updateAdminUserTable() {
+    cAdmin admin = new cAdmin();
+    List<String[]> userInfoList = admin.getUserInfoList();
+    DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
+    model.setRowCount(0);
+    for (String[] userInfo : userInfoList) {
+        Object[] row = {userInfo[0], userInfo[1]};
+        model.addRow(row);
+    }
+}
     
     private void loadRoles() {
         // Create the cAdmin object
@@ -100,14 +97,13 @@ public class jAdmin extends javax.swing.JFrame {
                             
                 }
             }
-        });    
+        });
+        
+        updateAdminUserTable();
+        
     }
 
- 
-    
-    
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -209,11 +205,6 @@ public class jAdmin extends javax.swing.JFrame {
         jLabel11.setText("Filter By");
 
         comboAdminSearchRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All" }));
-        comboAdminSearchRole.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboAdminSearchRoleActionPerformed(evt);
-            }
-        });
 
         txtAdminSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -258,9 +249,9 @@ public class jAdmin extends javax.swing.JFrame {
             }
         });
 
-        jLabel30.setText("Contact Number: ");
+        jLabel30.setText("Role:");
 
-        comboAdminRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "delivery", "customer", " " }));
+        comboAdminRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrator", "Delivery Staff", "Customer", " " }));
         comboAdminRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboAdminRoleActionPerformed(evt);
@@ -290,20 +281,19 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(txtAdminPassword2)
                     .addComponent(comboAdminRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtAdminUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 536, Short.MAX_VALUE)
                 .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAdminDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(73, 73, 73))
             .addGroup(panelRoleLayout.createSequentialGroup()
+                .addGap(504, 504, 504)
                 .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelRoleLayout.createSequentialGroup()
-                        .addGap(504, 504, 504)
                         .addComponent(jLabel11)
                         .addGap(18, 18, 18)
                         .addComponent(comboAdminSearchRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelRoleLayout.createSequentialGroup()
-                        .addGap(504, 504, 504)
                         .addComponent(jLabel15)
                         .addGap(18, 18, 18)
                         .addComponent(txtAdminSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -315,17 +305,17 @@ public class jAdmin extends javax.swing.JFrame {
                 .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelRoleLayout.createSequentialGroup()
                         .addGap(135, 135, 135)
-                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel27)
-                            .addComponent(txtAdminUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(txtAdminUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel27))
                         .addGap(18, 18, 18)
-                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel25)
-                            .addComponent(txtAdminPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(txtAdminPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel25))
                         .addGap(18, 18, 18)
-                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel28)
-                            .addComponent(txtAdminPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(txtAdminPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel28))
                         .addGap(18, 18, 18)
                         .addGroup(panelRoleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel30)
@@ -347,7 +337,7 @@ public class jAdmin extends javax.swing.JFrame {
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btnAdminDelete)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
         panel.addTab("User Management", panelRole);
@@ -465,8 +455,7 @@ public class jAdmin extends javax.swing.JFrame {
                                         .addComponent(comboAdminProductCategory2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(panelProductLayout.createSequentialGroup()
                                         .addGap(77, 77, 77)
-                                        .addComponent(btnAdminProductAddCategory)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                        .addComponent(btnAdminProductAddCategory)))
                                 .addGap(97, 97, 97))))
                     .addGroup(panelProductLayout.createSequentialGroup()
                         .addGap(112, 112, 112)
@@ -505,7 +494,7 @@ public class jAdmin extends javax.swing.JFrame {
                             .addComponent(jLabel17))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 29, Short.MAX_VALUE))
+                .addGap(0, 62, Short.MAX_VALUE))
             .addGroup(panelProductLayout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jLabel29)
@@ -602,20 +591,20 @@ public class jAdmin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel34)
-                    .addComponent(comboAdminStatusDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
+                    .addComponent(comboAdminStatusDate, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40)
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel35)
-                    .addComponent(comboAdminStatusID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
+                    .addComponent(comboAdminStatusID, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40)
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboAdminStatusStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel36))
-                .addGap(45, 45, 45)
+                    .addComponent(jLabel36)
+                    .addComponent(comboAdminStatusStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40)
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel38)
-                    .addComponent(comboAdminStatusDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
+                    .addComponent(comboAdminStatusDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel37)
                     .addComponent(txtAdminStatusSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -633,14 +622,12 @@ public class jAdmin extends javax.swing.JFrame {
                     .addComponent(jLabel10))
                 .addGap(45, 45, 45)
                 .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelHistoryLayout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addGap(122, 122, 122))
+                    .addComponent(jLabel13)
                     .addGroup(panelHistoryLayout.createSequentialGroup()
                         .addComponent(comboAdminStatusAssignDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(45, 45, 45)
                         .addComponent(btnAdminStatusAssign)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 849, Short.MAX_VALUE)
                 .addComponent(btnPurchaseHistoryRefresh)
                 .addContainerGap())
         );
@@ -648,24 +635,27 @@ public class jAdmin extends javax.swing.JFrame {
             panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelHistoryLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHistoryLayout.createSequentialGroup()
+                .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                        .addComponent(jLabel34)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel14)
+                            .addComponent(comboAdminStatusDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelHistoryLayout.createSequentialGroup()
+                        .addComponent(jLabel37)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtAdminStatusSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelHistoryLayout.createSequentialGroup()
                         .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel34)
                             .addComponent(jLabel38)
                             .addComponent(jLabel36)
                             .addComponent(jLabel35))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel14)
-                            .addComponent(comboAdminStatusDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(comboAdminStatusID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(comboAdminStatusStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboAdminStatusDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHistoryLayout.createSequentialGroup()
-                        .addComponent(jLabel37)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtAdminStatusSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(comboAdminStatusDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -681,7 +671,7 @@ public class jAdmin extends javax.swing.JFrame {
                             .addComponent(comboAdminStatusAssignOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(comboAdminStatusAssignDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdminStatusAssign))))
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(154, Short.MAX_VALUE))
         );
 
         panel.addTab("Order Status", panelHistory);
@@ -717,19 +707,9 @@ public class jAdmin extends javax.swing.JFrame {
 
         lblCartTotalItem.setText("Address:");
 
-        txtAdminCustomerAddress.setText("jTextField1");
-
-        txtAdminCustomerCity.setText("jTextField1");
-
         jLabel39.setText("City:");
 
         jLabel40.setText("State:");
-
-        txtAdminCustomerName.setText("jTextField1");
-
-        txtAdminCustomerState.setText("jTextField2");
-
-        txtAdminCustomerPostcode.setText("jTextField3");
 
         txtAdminCustomerSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -761,9 +741,7 @@ public class jAdmin extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(panelCustomerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblCartItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelCustomerLayout.createSequentialGroup()
-                        .addGap(0, 0, 0)
-                        .addComponent(lblCartPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(lblCartPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(panelCustomerLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(panelCustomerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -804,7 +782,7 @@ public class jAdmin extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtAdminCustomerSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 470, Short.MAX_VALUE))))
         );
         panelCustomerLayout.setVerticalGroup(
             panelCustomerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -972,39 +950,26 @@ public class jAdmin extends javax.swing.JFrame {
         if (selectedrow == -1) {
             JOptionPane.showMessageDialog(null, "Please select a user to delete!");
         } else {
-            if (JOptionPane.showConfirmDialog(null,"Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE) == 0) {
+            if (JOptionPane.showConfirmDialog(null, "Do you sure want to delete this user profile?", "Delete?", JOptionPane.WARNING_MESSAGE) == 0) {
                 DefaultTableModel model = (DefaultTableModel) tableAdminUser1.getModel();
                 String role = (String) model.getValueAt(selectedrow, 0);
                 String username = (String) model.getValueAt(selectedrow, 1);
-                model.removeRow(selectedrow);
 
-                File inputFile = new File("userinfo.txt");
-                File tempFile = new File("userinfo_temp.txt");
+                // Create the cAdmin object
+                cAdmin admin = new cAdmin();
 
-                try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        String[] info = line.split(";");
-                        String dltRole = info[0].trim();
-                        String dltUsername = info[1].trim();
+                // Delete the user profile through cUser
+                boolean success = admin.deleteUserInfo(role, username);
 
-                        if (!(dltUsername.equals(username) && dltRole.equals(role))) {
-                            writer.write(line + System.getProperty("line.separator"));
-                        }
-                    }
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(jAdmin.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                // Delete the original file and rename the temporary file
-                if (inputFile.delete()) {
-                    tempFile.renameTo(inputFile);
+                if (success) {
+                    model.removeRow(selectedrow);
+                    JOptionPane.showMessageDialog(null, "User profile deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to delete user profile!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
+        updateAdminUserTable();
     }//GEN-LAST:event_btnAdminDeleteActionPerformed
 
     private void btnAdminClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminClearActionPerformed
@@ -1027,23 +992,24 @@ public class jAdmin extends javax.swing.JFrame {
                 "Please re-enter password", JOptionPane.ERROR_MESSAGE);
             txtAdminPassword.setText("");
             txtAdminPassword2.setText("");
-        }
+        } 
         
         else if (Password.equals("") || Username.equals("")) {
-                JOptionPane.showConfirmDialog(null,"Kindly fill in all the blank field",
-                    "No empty field allowed", JOptionPane.WARNING_MESSAGE);
-            }
+            JOptionPane.showConfirmDialog(null,"Kindly fill in all the blank field",
+                "No empty field allowed", JOptionPane.WARNING_MESSAGE);
+        } 
+        
+        else if (usernameExists) {
+            JOptionPane.showConfirmDialog(null,"User added!",
+                "Success", JOptionPane.INFORMATION_MESSAGE);
+        } 
         
         else {
-            if (usernameExists) {
-                JOptionPane.showConfirmDialog(null,"The username have been taken, Please contact Administator for more information",
-                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
-            }
-            else {
-                JOptionPane.showConfirmDialog(null,"User added!",
-                        "User Exsisted", JOptionPane.ERROR_MESSAGE);
-                }
+            JOptionPane.showConfirmDialog(null,"The username already exists, please enter a different username",
+                "User Exists", JOptionPane.ERROR_MESSAGE);
         }
+        updateAdminUserTable();
+
     }//GEN-LAST:event_btnAdminSaveActionPerformed
 
     private void txtAdminSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdminSearchKeyPressed
@@ -1056,10 +1022,6 @@ public class jAdmin extends javax.swing.JFrame {
         tableAdminUser1.setRowSorter(tr);
         tr.setRowFilter(RowFilter.regexFilter(txtAdminSearch.getText().trim()));
     }//GEN-LAST:event_txtAdminSearchKeyPressed
-
-    private void comboAdminSearchRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAdminSearchRoleActionPerformed
-
-    }//GEN-LAST:event_comboAdminSearchRoleActionPerformed
 
       
     /**
