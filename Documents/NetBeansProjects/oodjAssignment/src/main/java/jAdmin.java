@@ -26,7 +26,10 @@ public class jAdmin extends javax.swing.JFrame {
     private String postcode;
     private String city;
     private String state;
-    private cAdmin admin = new cAdmin();
+    private cAdmin admin ;
+    private ArrayList<cItem.Item> itemList;
+
+
     /**
      * Creates new form jDashboard
      */
@@ -55,7 +58,28 @@ public class jAdmin extends javax.swing.JFrame {
         model.addRow(row);
     }
 }
-    
+    private void loadProductTable() {
+        // Create the cItem object
+        cItem item = new cItem();
+        
+        // Read the items from the item.txt file
+        List<String[]> itemList = item.getItemList();
+        
+         // Clear the table
+        DefaultTableModel model = (DefaultTableModel) tableAdminProduct.getModel();
+        model.setRowCount(0);
+
+        // Add the items to the table
+        for (String[] itemInfo : itemList) {
+            String categoryID = itemInfo[0];
+            String itemName = itemInfo[1];
+            String itemPrice = itemInfo[2];
+            String itemStock = itemInfo[3];
+            model.addRow(new Object[]{categoryID, itemName, itemPrice, itemStock});
+        }
+        
+    }
+ 
     private void loadRoles() {
         // Create the cAdmin object
         cAdmin admin = new cAdmin();
@@ -102,6 +126,8 @@ public class jAdmin extends javax.swing.JFrame {
         updateAdminUserTable();
         
     }
+    
+
 
 
     /**
