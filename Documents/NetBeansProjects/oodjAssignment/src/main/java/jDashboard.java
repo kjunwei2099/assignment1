@@ -29,7 +29,6 @@ import javax.swing.table.TableRowSorter;
  * @author Kwan Jun Wei
  */
 public class jDashboard extends javax.swing.JFrame {
-
     private String role = "";
     private String username;
     private String password;
@@ -63,8 +62,8 @@ public class jDashboard extends javax.swing.JFrame {
             // use cUser class to get address, postcode, city, state
             customer = new cRegisteredCustomer(username, password);
             customer.loadOrderList();
-            customer.getOrderList();
-            
+            customer.loadItemList();
+            customer.loadCategoryList();
             this.address = customer.getAddress();
             this.postcode = customer.getPostcode();
             this.city=customer.getCity();
@@ -80,15 +79,25 @@ public class jDashboard extends javax.swing.JFrame {
             jTabbedPane1.add("Cart", panelCart);
             jTabbedPane1.add("Order History", panelHistory);
             jTabbedPane1.add("Profile", panelProfile);
+            jLabel8.setVisible(true);
+            spinnerShopQuantity.setVisible(true);
+            btnShopCart.setVisible(true);
+            btnLoginRegister.setVisible(false);
             lblWelcome.setText("Welcome Back " + username + "!");
             btnCartRefreshTable.doClick(); // refresh table cart
             btnPurchaseHistoryRefresh.doClick(); // refresh table history
  
         } else {
             // if not logged in then panel cart, panel order history, panel profile will be hidden
+            jLabel8.setVisible(false);
+            spinnerShopQuantity.setVisible(false);
+            btnShopCart.setVisible(false);
+            btnLoginRegister.setVisible(true);
             jTabbedPane1.remove(panelCart);
             jTabbedPane1.remove(panelHistory);
             jTabbedPane1.remove(panelProfile);
+            customer.loadItemList();
+            customer.loadCategoryList();
         }
         btnShopLoadTable.doClick(); // logged in or not, table shop will be loaded
     }
@@ -115,6 +124,7 @@ public class jDashboard extends javax.swing.JFrame {
         spinnerShopQuantity = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
         lblWelcome = new javax.swing.JLabel();
+        btnLoginRegister = new javax.swing.JButton();
         panelCart = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableCart = new javax.swing.JTable();
@@ -219,6 +229,13 @@ public class jDashboard extends javax.swing.JFrame {
 
         lblWelcome.setText("Welcome Back!");
 
+        btnLoginRegister.setText("Login / Register");
+        btnLoginRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginRegisterActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelShopLayout = new javax.swing.GroupLayout(panelShop);
         panelShop.setLayout(panelShopLayout);
         panelShopLayout.setHorizontalGroup(
@@ -248,7 +265,10 @@ public class jDashboard extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(btnShopCart)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnShopLoadTable, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnShopLoadTable, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelShopLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnLoginRegister)))
                 .addContainerGap())
         );
         panelShopLayout.setVerticalGroup(
@@ -273,7 +293,9 @@ public class jDashboard extends javax.swing.JFrame {
                         .addComponent(jLabel8)
                         .addComponent(spinnerShopQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnShopLoadTable))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addComponent(btnLoginRegister)
+                .addGap(28, 28, 28)
                 .addComponent(lblShopStatus)
                 .addGap(34, 34, 34))
         );
@@ -285,11 +307,11 @@ public class jDashboard extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item Name", "Price", "Quantity", "Total Price"
+                "Category", "Item Name", "Price", "Quantity", "Total Price"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -391,13 +413,10 @@ public class jDashboard extends javax.swing.JFrame {
                     .addGroup(panelCartLayout.createSequentialGroup()
                         .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCartItemName, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
-                            .addGroup(panelCartLayout.createSequentialGroup()
-                                .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(spinnerCartQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel5))
-                                    .addComponent(btnCartEdit))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(panelCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(spinnerCartQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5))
+                            .addComponent(btnCartEdit))
                         .addGap(75, 75, 75)
                         .addComponent(btnCartPay)
                         .addContainerGap())
@@ -699,53 +718,31 @@ public class jDashboard extends javax.swing.JFrame {
         if (row >= 0) {
             int response = JOptionPane.showConfirmDialog(this, "Confirm to delete the selected row?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (response == JOptionPane.YES_OPTION) {
-                boolean canEdit = false;
-                ArrayList<String> orderList = cFileHandling.readFile("order.txt"); // get returned arraylist from cFileHandling class
-                ArrayList<String> itemList = cFileHandling.readFile("item.txt"); // get returned arraylist from cFileHandling class
-                String itemName = objModel.getValueAt(row, 0).toString();
-                for (int i = 0; i < orderList.size(); i++) { // for loop check order(arrayList) 
-                    Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-                    sc.next();sc.next();sc.next();
-                    String tempOrderUsername = sc.next();
-                    String tempOrderItemName = sc.next();
-                    sc.next();
-                    String tempOrderItemQuantity = sc.next();
-                    sc.next();
-                    String tempIsPaid = sc.next();
+                String itemName = objModel.getValueAt(row, 1).toString();
+                for (int i = 0; i < customer.getOrderList().size(); i++) { // for loop check order(arrayList) 
+                    String[]fields = customer.getOrderList().get(i).split(";");
+                    String tempOrderUsername = fields[3];
+                    String tempOrderItemName = fields[4];
+                    int tempOrderItemQuantity = Integer.parseInt(fields[6].replaceAll("[^0-9.]", ""));
+                    String tempIsPaid = fields[8];
                     // only unpaid cart can be removed 
                     if (itemName.equals(tempOrderItemName) && username.equals(tempOrderUsername) && tempIsPaid.equals("unpaid")) {
-                        for (int x = 0; x < itemList.size(); x++) { // for loop check item(arrayList)
-                            Scanner sc2 = new Scanner(itemList.get(x)).useDelimiter(";");
-                            String tempItemItemCategory = sc2.next();
-                            String tempItemItemName = sc2.next();
-                            String tempItemItemPrice = sc2.next();
-                            String tempItemItemQuantity = sc2.next();
+                        for (int x = 0; x < customer.getItemList().size(); x++) { // for loop check item(arrayList)
+                            String[]itemFields = customer.getItemList().get(x).split(";");
+                            String tempItemItemCategoryID = itemFields[0];
+                            String tempItemItemName = itemFields[1];
+                            int tempItemItemQuantity = Integer.parseInt(itemFields[3].replaceAll("[^0-9.]", ""));
                             // to add back the deducted quantity from the itemList quantity 
                             if (tempOrderItemName.equals(tempItemItemName)) 
                             {
-                                int qItemQuantity = Integer.parseInt(tempItemItemQuantity.replaceAll("[^0-9.]", ""));
-                                int qOrderQuantity = Integer.parseInt(tempOrderItemQuantity);
-                                int finalQuantity = qItemQuantity + qOrderQuantity;
-                                itemList.set(x, tempItemItemCategory + ";" + tempItemItemName + ";" + tempItemItemPrice + ";" + finalQuantity);
-                                canEdit = true;
+                                int finalQuantity = tempItemItemQuantity + tempOrderItemQuantity;
+                                customer.editItemQuantity(tempItemItemCategoryID, tempItemItemName, finalQuantity);
                             }
                         }
-                        orderList.remove(i);
+                        objModel.removeRow(row); //remove the select row from table
+                        customer.removeCart(i);
                         lblCartStatus.setText("Status : Item removed from cart!");
                     }
-                }
-                if (canEdit) { 
-                    //write file
-                    cFileHandling f = new cFileHandling();
-                    for (String eachString : orderList) {
-                        f.newList(eachString);
-                    } // add every item from orderList into arrayList in cFileHandling
-                    f.saveListToFile("order.txt"); //save arrayList into text file
-                    for (String eachString : itemList) {
-                        f.newList(eachString);
-                    } // add every item from itemList into arrayList in cFileHandling
-                    f.saveListToFile("item.txt"); // save arrayList into text file
-                    objModel.removeRow(row); //remove the select row from table
                 }
             }
         } 
@@ -767,8 +764,7 @@ public class jDashboard extends javax.swing.JFrame {
                 this.city = txtCity.getText();
                 this.state = txtState.getText();
                 // create new cRegisteredCustomer object to modify user profile 
-                cRegisteredCustomer user = new cRegisteredCustomer(username,password); 
-                user.modifyProfile(role, username, password, address, postcode, city, state); // method in cRegisteredCustomer
+                customer.modifyProfile(role, username, password, address, postcode, city, state); // method in cRegisteredCustomer
             } else {
                 lblProfileStatus.setText("Status: Make Sure New Password is same as Confirmation");
             }
@@ -780,6 +776,7 @@ public class jDashboard extends javax.swing.JFrame {
     private void btnShopCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopCartActionPerformed
         DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
         int selectedViewIndex = tableShop.getSelectedRow();
+        
         int row = tableShop.convertRowIndexToModel(selectedViewIndex);
         // check if role is customer(registered) or not customer(not registered)
         if (!role.equals("customer")) {
@@ -791,41 +788,32 @@ public class jDashboard extends javax.swing.JFrame {
         } else {
             boolean canCart = false;
             if (row >= 0) {
-                cFileHandling f = new cFileHandling();
                 // get returned arraylist from cFileHandling class
-                ArrayList<String> itemList = cFileHandling.readFile("item.txt");
-                for (int i = 0; i < itemList.size(); i++) {
-                    Scanner sc = new Scanner(itemList.get(i)).useDelimiter(";");
-                    String category = sc.next();
-                    String itemName = sc.next();
-                    String itemPrice = sc.next();
-                    String itemQuantity = sc.next();
+                for (int i = 0; i < customer.getItemList().size(); i++) {
+                    String[]item = customer.getItemList().get(i).split(";");
+                    String categoryID = item[0];
+                    String itemName = item[1];
+                    String itemPrice = item[2];
+                    int itemQuantity = Integer.parseInt(item[3].replaceAll("[^0-9.]", ""));
                     // check if select row itemName == text file item name to check if they can cart 
                     if (objModel.getValueAt(row, 1).toString().equals(itemName)) {
-                        Integer q = Integer.parseInt(itemQuantity.replaceAll("[^0-9.]", ""));
-                        int q2 = Integer.parseInt(spinnerShopQuantity.getValue().toString());
-                        int check = q - q2;
+                        int spinner = Integer.parseInt(spinnerShopQuantity.getValue().toString());
+                        int check = itemQuantity - spinner;
                         if (check >= 0) {
                             // if quantity in item text file larger than cart amount then the user can add to cart
                             canCart = true;
                             // replace the arrayList above (itemList) based on arrayList index with a new string
-                            itemList.set(i, (category + ";" + itemName + ";" + itemPrice + ";" + check));
+                            customer.editItemQuantity(categoryID, itemName, check);
                         }
                     }
                 }
                 if (canCart) {
-                    for (String eachString : itemList) {
-                        f.newList(eachString); // add every item from itemList into arrayList in cFileHandling
-                    }
-                    f.saveListToFile("item.txt"); //save the arrayList to file
-
                     cDate date = new cDate(); // create new object from cDate
                     // use the new object from cDate to calculate the total price for the item (price*quantity)
                     // return current date and time to add into "String str"
                     date.calTotalPrice(objModel.getValueAt(row, 2).toString(), spinnerShopQuantity.getValue().toString());
                     String str = "null;" + date.getDate() + ";" + username + ";" + objModel.getValueAt(row, 1).toString() + ";" + objModel.getValueAt(row, 2).toString() + ";" + spinnerShopQuantity.getValue().toString() + ";" + date.getTotal() + ";unpaid;null;null;no;null";
-                    f.addToList("order.txt", str);
-                    f.saveListToFile("order.txt");
+                    customer.addCart(str);
                     lblShopStatus.setText("Status: Item added to cart!");
                 } else {
                     lblShopStatus.setText("Status: Item exceeds stock available!");
@@ -838,16 +826,21 @@ public class jDashboard extends javax.swing.JFrame {
 
     private void btnShopLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShopLoadTableActionPerformed
         // refresh table shop 
+        customer.loadItemList();
+        customer.loadCategoryList();
         DefaultTableModel objModel = (DefaultTableModel) tableShop.getModel();
         objModel.setRowCount(0); // clear table
-        ArrayList<String> itemList = cFileHandling.readFile("item.txt"); // returned arrayList from item text file
-        for (String eachString : itemList) {
-            Scanner sc = new Scanner(eachString).useDelimiter(";");
-            String category = sc.next();
-            String item = sc.next();
-            String price = sc.next();
-            String quantity = sc.next();
-            objModel.addRow(new Object[]{category, item, price, quantity}); // add row into table 
+        for (String eachItem : customer.getItemList()) {
+            String[]itemFields = eachItem.split(";");
+            for(String eachCategory: customer.getCategoryList())
+            {
+                String[]categoryFields=eachCategory.split(";");
+                if(itemFields[0].equals(categoryFields[0]))
+                {
+                    itemFields[0] = categoryFields[1];
+                }
+            }
+            objModel.addRow(new Object[]{itemFields[0], itemFields[1], itemFields[2], itemFields[3]}); // add row into table 
         }
         lblShopStatus.setText("Status : Table Loaded!");
     }//GEN-LAST:event_btnShopLoadTableActionPerformed
@@ -855,62 +848,48 @@ public class jDashboard extends javax.swing.JFrame {
     private void btnCartRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartRefreshTableActionPerformed
         DefaultTableModel objModel = (DefaultTableModel) tableCart.getModel();
         objModel.setRowCount(0); // clear table
-        ArrayList<String> lines = cFileHandling.readFile("order.txt");  // returned arrayList from order text file
-        for (String eachString : lines) {
-            Scanner sc = new Scanner(eachString).useDelimiter(";");
-            sc.next();sc.next();sc.next(); 
-            String tempUsername = sc.next();
-            String tempItemName = sc.next();
-            String tempItemPrice = sc.next();
-            String tempItemQuantity = sc.next();
-            String tempTotalPrice = sc.next();
-            String isPaid = sc.next();
+        customer.loadItemList();
+        customer.loadOrderList();
+        customer.loadCategoryList();
+        for (String orderString : customer.getOrderList()) {
+            String[]order = orderString.split(";");
+            String tempUsername = order[3];
+            String tempItemName = order[4];
+            String tempItemPrice = order[5];
+            String tempItemQuantity = order[6];
+            String tempTotalPrice = order[7];
+            String isPaid = order[8];
+            String categoryName ="";
+            for(String itemString: customer.getItemList()){
+                String[]item = itemString.split(";");
+                for(String categoryString: customer.getCategoryList())
+                {
+                    String[]category = categoryString.split(";");
+                    if(item[0].equals(category[0]))
+                    {
+                        item[0] = category[1];
+                    }
+                }
+                if(order[4].equals(item[1]))
+                {
+                    categoryName = item[0];
+                }
+            }
             if (tempUsername.equals(username) && isPaid.equals("unpaid")) {
-                objModel.addRow(new Object[]{tempItemName, tempItemPrice, tempItemQuantity, tempTotalPrice});// add row into table 
+                objModel.addRow(new Object[]{categoryName,tempItemName, tempItemPrice, tempItemQuantity, tempTotalPrice});// add row into table 
             }
         }
         lblCartStatus.setText("Status : Table Loaded!");
     }//GEN-LAST:event_btnCartRefreshTableActionPerformed
 
     private void btnCartPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartPayActionPerformed
-        ArrayList<String> orderList = cFileHandling.readFile("order.txt"); // returned arrayList from order text file
-        boolean found = false;
         int response = JOptionPane.showConfirmDialog(this, "Confirm to pay?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (response == JOptionPane.YES_OPTION) {
-            int tempID = 0;
-            for (int i = 0; i < orderList.size(); i++) {
-                Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-                String orderID = sc.next();
-                sc.next(); //date
-                sc.next(); //time
-                String tempUsername = sc.next();
-                String tempItemName = sc.next();
-                String tempItemPrice = sc.next();
-                String tempItemQuantity = sc.next();
-                String tempTotalPrice = sc.next();
-                String isPaid = sc.next();
-                try {
-                    tempID = Integer.parseInt(orderID);
-                } catch (Exception e) {
-                }
-                if (tempUsername.equals(username) && isPaid.equals("unpaid")) { // check username in array with current logged in user and the item is unpaid
-                    int finalID = tempID + 1;
-                    cDate date = new cDate(); // create new object from cDate
-                    // return current date and time to add into "String str"
-                    String tempString = finalID+";"+date.getDate()+";"+tempUsername+";"+tempItemName+";"+tempItemPrice+";"+tempItemQuantity+";"+tempTotalPrice+";paid;null;Packing Item;no;null";
-                    orderList.set(i, tempString);
-                    found = true; // can pay
-                }
-            }
+            customer.pay();
         }
-        if (found) {
-            cFileHandling f = new cFileHandling(); // create new cFileHandling object
-            for (String eachString : orderList) {
-                f.newList(eachString); // add each list into arrayList in cFileHandling
-            }
-            f.saveListToFile("order.txt"); // save arrayList in cFileHandling into order text file
+        if (customer.getIsPaid()) {
             lblCartStatus.setText("Status : Sucessfully paid");
-            found = false;
+            customer.setIsPaid(false);
         } else {
             lblCartStatus.setText("Status : No item to paid");
         }
@@ -920,26 +899,16 @@ public class jDashboard extends javax.swing.JFrame {
         DefaultTableModel objModel = (DefaultTableModel) tablePurchaseHistory.getModel();
         objModel.setRowCount(0);
         comboSelectID.removeAllItems(); // clear every item in comboBox(comboSelectID)
-        ArrayList<String> orderList = cFileHandling.readFile("order.txt"); // returned arrayList from order text file
-        for (String eachString : orderList) {
-            Scanner sc = new Scanner(eachString).useDelimiter(";");
-            String orderID = sc.next();
-            String date = sc.next();
-            String time = sc.next();
-            String tempUsername = sc.next();
-            String tempItemName = sc.next();
-            String tempItemPrice = sc.next();
-            String tempItemQuantity = sc.next();
-            String tempTotalPrice = sc.next();
-            String isPaid = sc.next();
-            sc.next();
-            String deliveryStatus = sc.next();
-            String feedback = sc.next();
+        customer.loadOrderList();
+        for (String orderList : customer.getOrderList()) {
+            String order[] = orderList.split(";");
+            String tempUsername = order[3];           
+            String isPaid = order[8];
             if (tempUsername.equals(username) && isPaid.equals("paid")) { // check if the item is paid by the user
                 // if is paid by the user, item will be added
-                objModel.addRow(new Object[]{date + " " + time, orderID, tempItemName, tempItemPrice, tempItemQuantity, tempTotalPrice, deliveryStatus});
-                if (deliveryStatus.equals("Delivered") && feedback.equals("no")) {
-                    comboSelectID.addItem(orderID); // add every orderID into comboBox(comboSelectID) for customer to update feedback
+                objModel.addRow(new Object[]{order[1]+ order[2], order[0], order[4], order[5], order[6], order[7], order[10]});
+                if (order[10].equals("Delivered") && order[11].equals("no")) {
+                    comboSelectID.addItem(order[0]); // add every orderID into comboBox(comboSelectID) for customer to update feedback
                 }
             }
         }
@@ -968,62 +937,44 @@ public class jDashboard extends javax.swing.JFrame {
         boolean canEdit = false;
         int finalQuantity;
         if (row >= 0) {
-            ArrayList<String> itemList = cFileHandling.readFile("item.txt"); //returned arraylist from cFileHandling class
-            ArrayList<String> orderList = cFileHandling.readFile("order.txt"); //returned arraylist from cFileHandling class
-            for (int i = 0; i < itemList.size(); i++) {
-                Scanner sc = new Scanner(itemList.get(i)).useDelimiter(";");
-                String category = sc.next();
-                String itemName = sc.next();
-                String itemPrice = sc.next();
-                String itemQuantity = sc.next();
+            for (int i = 0; i < customer.getItemList().size(); i++) {
+                String[]item = customer.getItemList().get(i).split(";");
+                String itemName = item[1];
                 // check if the user can edit the cart based on (itemName, quantity)
-                if (itemName.equals(objModel.getValueAt(row, 0).toString()) && !objModel.getValueAt(row, 3).toString().equals(spinnerCartQuantity.getValue().toString())) {
-                    Integer qOri = Integer.parseInt(itemQuantity.replaceAll("[^0-9.]", ""));
+                if (itemName.equals(objModel.getValueAt(row, 1).toString()) && !objModel.getValueAt(row, 3).toString().equals(spinnerCartQuantity.getValue().toString())) {
+                    Integer qOri = Integer.parseInt(item[3].replaceAll("[^0-9.]", ""));
                     int q2 = Integer.parseInt(spinnerCartQuantity.getValue().toString());
-                    int q3 = Integer.parseInt(objModel.getValueAt(row, 2).toString());
+                    int q3 = Integer.parseInt(objModel.getValueAt(row, 3).toString());
                     int check = qOri - q2;
                     if (check >= 0) {
                         // if can edit
                         canEdit = true;
-                        if (q2 < Integer.parseInt(objModel.getValueAt(row, 2).toString())) {
-                            finalQuantity = (Integer.parseInt(objModel.getValueAt(row, 2).toString()) - q2) + qOri;
-                            itemList.set(i, (category + ";" + itemName + ";" + itemPrice + ";" + finalQuantity)); // replace a list in arrayList with index
+                        if (q2 < Integer.parseInt(objModel.getValueAt(row, 3).toString())) {
+                            finalQuantity = (Integer.parseInt(objModel.getValueAt(row, 3).toString()) - q2) + qOri;
+                            customer.editItemQuantity(item[0], itemName, finalQuantity); // replace a list in arrayList with index
                         } else {
                             finalQuantity = (q3 + qOri) - q2;
-                            itemList.set(i, (category + ";" + itemName + ";" + itemPrice + ";" + finalQuantity)); // replace a list in arrayList with index
+                            customer.editItemQuantity(item[0],itemName,finalQuantity); // replace a list in arrayList with index
                         }
                     }
                 }
             }
             if (canEdit) { // if boolean canEdit = true
                 cDate date = new cDate(); // create new object from cDate (for calculating total price)
-                objModel.setValueAt(spinnerCartQuantity.getValue(), row, 2);
-                date.calTotalPrice(spinnerCartQuantity.getValue().toString(), objModel.getValueAt(row, 1).toString());
-                objModel.setValueAt(date.getTotal(), row, 3);
+                objModel.setValueAt(spinnerCartQuantity.getValue(), row, 3);
+                date.calTotalPrice(spinnerCartQuantity.getValue().toString(), objModel.getValueAt(row, 2).toString());
+                objModel.setValueAt(date.getTotal(), row, 4);
 
-                cFileHandling f = new cFileHandling(); // create new object from cFileHandling
-                for (String eachString : itemList) {
-                    f.newList(eachString); // add list into arrayList in cFileHandling
-                }
-                f.saveListToFile("item.txt"); //write arrayList in cFileHandling into item text file
-                for (int i = 0; i < orderList.size(); i++) {
-                    Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-                    String tempOrderId = sc.next();
-                    String tempDate = sc.next();
-                    String tempTime = sc.next();
-                    String tempUsername = sc.next();
-                    String tempCartItemName = sc.next();
-                    String tempCartItemPrice = sc.next();
+                for (int i = 0; i < customer.getOrderList().size(); i++) {
+                    String[]order = customer.getOrderList().get(i).split(";");
+                    String tempOrderId = order[0];
+                    String tempUsername = order[3];
+                    String tempCartItemName = order[4];
                     // replace array in orderList arrayList with selected index
-                    if (tempOrderId.equals("null") && objModel.getValueAt(row, 0).toString().equals(tempCartItemName) && tempUsername.equals(username)) {
-                        String tempString = tempOrderId + ";" + date.getDate() + ";" + tempUsername + ";" + tempCartItemName + ";" + tempCartItemPrice + ";" + objModel.getValueAt(row, 2).toString() + ";" + date.getTotal() + ";unpaid;null;null;no;null";
-                        orderList.set(i, tempString); // replace
+                    if (tempOrderId.equals("null") && objModel.getValueAt(row, 1).toString().equals(tempCartItemName) && tempUsername.equals(username)) {
+                        customer.editOrderQuantity(i, objModel.getValueAt(row, 3).toString(), date.getTotal(), date.getDate());
                     }
                 }
-                for (String eachString : orderList) {
-                    f.newList(eachString); // add into arrayList in cFileHandling
-                }
-                f.saveListToFile("order.txt"); // write arrayList into order text file
                 lblShopStatus.setText("Status: Cart updated!");
             } else {
                 lblShopStatus.setText("Status: Quantity exceed stock available!");
@@ -1032,40 +983,23 @@ public class jDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCartEditActionPerformed
 
     private void btnSubmitFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitFeedbackActionPerformed
-        ArrayList<String> orderList = cFileHandling.readFile("order.txt"); // returned arrayList from order text file
-        boolean canSubmit = false;
-        for (int i = 0; i < orderList.size(); i++) {
-            Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-            String tempOrderID = sc.next();
-            String tempDate = sc.next();
-            String tempTime = sc.next();
-            String tempUsername = sc.next();
-            String tempItemName = sc.next();
-            String tempPrice = sc.next();
-            String tempQuantity = sc.next();
-            String tempTotalPrice = sc.next();
-            String tempIsPaid = sc.next();
-            String tempDeliveryStaff = sc.next();
-            String tempStatus = sc.next();
-            String tempHasFeedback = sc.next();
+        for (int i = 0; i < customer.getOrderList().size(); i++) {
+            String[]order = customer.getOrderList().get(i).split(";");
+            String tempOrderID = order[0];
+            String tempStatus = order[10];
+            String tempHasFeedback = order[11];
             // check if the order is delivered, only customer can give feedback
-            if (comboSelectID.getSelectedItem().equals(tempOrderID) && tempStatus.equals("Delivered") && tempHasFeedback.equals("no") && !txtFeedback.getText().equals("")) {
-                orderList.set(i, tempOrderID + ";" + tempDate + ";" + tempTime + ";" + tempUsername + ";" + tempItemName
-                        + ";" + tempPrice + ";" + tempQuantity + ";" + tempTotalPrice + ";" + tempIsPaid + ";" + tempDeliveryStaff + ";" + tempStatus + ";yes;" + txtFeedback.getText());
-                canSubmit = true;
+            if (comboSelectID.getSelectedItem().equals(tempOrderID) && tempStatus.equals("Delivered") && tempHasFeedback.equals("no") && !txtFeedback.getText().toString().equals("")) {
+                customer.addFeedback(tempOrderID, txtFeedback.getText());
+                txtFeedback.setText("");
+                lblFeedbackStatus.setText("Status : Feedback Submitted!");
+                btnPurchaseHistoryRefresh.doClick();
+                break;
             }
-        }
-        if (canSubmit) { // if can give feedback
-            cFileHandling f = new cFileHandling();
-            for (String eachString : orderList) {
-                f.newList(eachString); //add every item into arrayList in cFileHandling
+            else
+            {
+                lblFeedbackStatus.setText("Status : Feedback Exists!");
             }
-            f.saveListToFile("order.txt"); //write arrayList into order text file
-            txtFeedback.setText("");
-            lblFeedbackStatus.setText("Status : Feedback submitted!");
-            canSubmit = false;
-        } else {
-            lblFeedbackStatus.setText("Status : Feedback exists!");
         }
     }//GEN-LAST:event_btnSubmitFeedbackActionPerformed
 
@@ -1077,6 +1011,12 @@ public class jDashboard extends javax.swing.JFrame {
         tr.setRowFilter(RowFilter.regexFilter(txtShopSearch.getText().trim()));
         // show the filtered data and show in table 
     }//GEN-LAST:event_txtShopSearchKeyPressed
+
+    private void btnLoginRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginRegisterActionPerformed
+        this.dispose();
+        jLogin login = new jLogin();
+        login.setVisible(true);
+    }//GEN-LAST:event_btnLoginRegisterActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1102,6 +1042,7 @@ public class jDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnCartPay;
     private javax.swing.JButton btnCartRefreshTable;
     private javax.swing.JButton btnCartRemove;
+    private javax.swing.JButton btnLoginRegister;
     private javax.swing.JButton btnProfileEdit;
     private javax.swing.JButton btnProfileLogout;
     private javax.swing.JButton btnPurchaseHistoryRefresh;

@@ -24,11 +24,16 @@ public class jDelivery extends javax.swing.JFrame {
     
     public jDelivery() {
         initComponents();
-        btnLoadTable.doClick();
+        configuration();
     }
-    
+    private String role="";
     private String username;
     private String password;
+    private cDeliveryStaff deliveryStaff;
+
+    public void setRole(String role){
+        this.role = role;
+    }
     
     public void setUsername(String username){
         this.username=username;
@@ -37,6 +42,12 @@ public class jDelivery extends javax.swing.JFrame {
     
     public void setPassword(String password){
         this.password=password;
+    }
+    
+    public void configuration(){
+        deliveryStaff= new cDeliveryStaff(username,password);
+        deliveryStaff.loadOrderList();
+        deliveryStaff.loadUserList();
     }
 
     /**
@@ -254,46 +265,38 @@ public class jDelivery extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoadTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadTableActionPerformed
-        ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
-        ArrayList<String> order = cFileHandling.readFile("order.txt");
         DefaultTableModel objModel = (DefaultTableModel) tableCustomerOrder.getModel();
         objModel.setRowCount(0);
-        for(int i =0;i<order.size();i++) // loop order text file
+        comboFeedback.removeAllItems();
+        comboDelivery.removeAllItems();
+        deliveryStaff.loadOrderList();
+        deliveryStaff.loadUserList();
+        for(int i =0;i<deliveryStaff.getOrderList().size();i++) // loop order text file
         {
-            Scanner sc = new Scanner(order.get(i)).useDelimiter(";");
-            String orderID = sc.next();
-            String date = sc.next();
-            String time = sc.next();
-            String tempUsername = sc.next();
-            String tempItemName = sc.next();
-            String tempItemPrice = sc.next();
-            String tempItemQuantity = sc.next();
-            String tempTotalPrice = sc.next();
-            String isPaid = sc.next();
-            String deliveryStaff = sc.next();
-            String deliveryStatus = sc.next();
-            String haveFeedback = sc.next();
-            
-            ////// if(deliveryStaff.equals(username){
-            //////      only add into table 
-            ////// }
-            
-            if(!deliveryStatus.equals("null"))
+            String[]order = deliveryStaff.getOrderList().get(i).split(";");
+            String orderID = order[0];
+            String tempUsername = order[3];
+            String tempDeliveryStaff = order[9];
+            String deliveryStatus = order[10];
+            String haveFeedback = order[11];
+            if(!deliveryStatus.equals("null")&&username.equals(tempDeliveryStaff))//
             {
-                for(int x = 0;x<userList.size();x++) // loop userInfo text file to add customer shipment info (address,postcode,city,state)
+                
+                for(int x = 0;x<deliveryStaff.getUserList().size();x++) // loop userInfo text file to add customer shipment info (address,postcode,city,state)
                 {
-                    Scanner sc2 = new Scanner(userList.get(x)).useDelimiter(";");
-                    sc2.next();
-                    String username = sc2.next();
-                    if(tempUsername.equals(username))
+                    String[]user = deliveryStaff.getUserList().get(x).split(";");
+                    String custUsername = user[1];
+                    if(tempUsername.equals(custUsername))
                     {
-                        String password = sc2.next();
-                        String address = sc2.next();
-                        String postcode = sc2.next();
-                        String city = sc2.next();
-                        String state = sc2.next();
-                        objModel.addRow(new Object[]{orderID,deliveryStatus,tempItemName,tempItemQuantity,haveFeedback,username,address,postcode,city,state});
-                        comboDelivery.addItem(orderID); // add orderID into comboDelivery for delivery staff to update delivery status
+                        String address = user[3];
+                        String postcode = user[4];
+                        String city = user[5];
+                        String state = user[6];
+                        objModel.addRow(new Object[]{orderID,deliveryStatus,order[4],order[6],haveFeedback,custUsername,address,postcode,city,state});
+                        if(!deliveryStatus.equals("Delivered"))
+                        {
+                            comboDelivery.addItem(orderID);// add orderID into comboDelivery for delivery staff to update delivery status
+                        }
                         if(haveFeedback.equals("yes")) // if got feedback then add orderID into comboFeedback
                         {
                             comboFeedback.addItem(orderID);
@@ -341,50 +344,51 @@ public class jDelivery extends javax.swing.JFrame {
     private void btnUpdateDeliveryStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateDeliveryStatusActionPerformed
         String tempStatus = "";
         DefaultTableModel objModel = (DefaultTableModel) tableCustomerOrder.getModel();
-        if(jRadioButton2.isSelected()||jRadioButton3.isSelected()) // check if radio button is selected
+        if(comboDelivery.getSelectedIndex()!=-1)
         {
-            if(jRadioButton2.isSelected())
+            if(jRadioButton2.isSelected()||jRadioButton3.isSelected()) // check if radio button is selected
             {
-                tempStatus="Out for delivery";
-            }
-            else if(jRadioButton3.isSelected())
-            {
-                tempStatus="Delivered";
-            }
-            cFileHandling f = new cFileHandling();
-            ArrayList<String> orderList = cFileHandling.readFile("order.txt");
-            for(int i=0;i<orderList.size();i++)
-            {
-                Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-                String tempOrderID = sc.next();
-                if(tempOrderID.equals(comboDelivery.getSelectedItem()))
+                if(jRadioButton2.isSelected())
                 {
-                    String tempDate=sc.next(),tempTime=sc.next(),tempUsername=sc.next(),tempItem=sc.next(),tempPrice=sc.next(),tempQuantity=sc.next(),tempAmount=sc.next(),tempIsPaid=sc.next(),tempDeliveryStaff=sc.next(),tempDeliveryStatus=sc.next(),tempHasFeedback=sc.next(),tempFeedback=sc.next();
-                    orderList.set(i, tempOrderID+";"+tempDate+";"+tempTime+";"+tempUsername+";"+tempItem+";"+tempPrice+";"+tempQuantity+";"+tempAmount+";"+tempIsPaid+";"+"deliverStaffName"+";"+tempStatus+";"+tempHasFeedback+";"+tempFeedback);
+                    tempStatus="Out for delivery";
                 }
-                for(int x=0;x<tableCustomerOrder.getRowCount();x++)
+                else if(jRadioButton3.isSelected())
                 {
-                    String orderID = objModel.getValueAt(x,0).toString();
-                    if(orderID.equals(comboDelivery.getSelectedItem()))
+                    tempStatus="Delivered";
+                }
+                for(int i=0;i<deliveryStaff.getOrderList().size();i++)
+                {
+                    String[]order = deliveryStaff.getOrderList().get(i).split(";");
+                    String tempOrderID = order[0];
+                    if(tempOrderID.equals(comboDelivery.getSelectedItem()))
                     {
-                        objModel.setValueAt(tempStatus, x, 1);
-                    } 
+                        deliveryStaff.updateDeliveryStatus(tempOrderID, tempStatus);
+                    }
+                    for(int x=0;x<tableCustomerOrder.getRowCount();x++)
+                    {
+                        String orderID = objModel.getValueAt(x,0).toString();
+                        if(orderID.equals(comboDelivery.getSelectedItem()))
+                        {
+                            objModel.setValueAt(tempStatus, x, 1);
+                        } 
+                    }
                 }
+                lblStatus.setText("Status : Delivery Status updated!");
             }
-            for(String eachString: orderList)
+            else
             {
-                f.newList(eachString); 
-            }
-            f.saveListToFile("order.txt");
-            lblStatus.setText("Status : Delivery Status updated!");
+                lblStatus.setText("Status : Please select one status to update!");
+            }           
         }
         else
         {
-            lblStatus.setText("Status : Please select one status to update!");
+            lblStatus.setText("Status : Please select orderID to update!");
         }
+        btnLoadTable.doClick();
     }//GEN-LAST:event_btnUpdateDeliveryStatusActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        this.role="";
         this.username="";
         this.dispose();
         jDashboard d = new jDashboard();
@@ -392,16 +396,13 @@ public class jDelivery extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnShowFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowFeedbackActionPerformed
-        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
         String tempOrderID = comboFeedback.getSelectedItem().toString();
-        for(int i=0;i<orderList.size();i++)
+        for(int i=0;i<deliveryStaff.getOrderList().size();i++)
         {
-            Scanner sc = new Scanner(orderList.get(i)).useDelimiter(";");
-            String orderID = sc.next();
-            sc.next();sc.next();sc.next();sc.next();sc.next();sc.next();
-            sc.next();sc.next();sc.next();sc.next();
-            String haveFeedback = sc.next();
-            String feedback = sc.next();
+            String[]order=deliveryStaff.getOrderList().get(i).split(";");
+            String orderID = order[0];
+            String haveFeedback = order[11];
+            String feedback = order[12];
             if(haveFeedback.equals("yes")&&orderID.equals(tempOrderID))
             {
                 lblFeedback.setText(feedback);                

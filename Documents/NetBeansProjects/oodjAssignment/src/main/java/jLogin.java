@@ -245,6 +245,10 @@ public class jLogin extends javax.swing.JFrame {
             {
                 jDelivery d = new jDelivery();
                 d.setVisible(true);
+                d.setRole(user.getRole());
+                d.setUsername(user.getUsername());
+                d.setPassword(user.getPassword());
+                d.configuration();
                 //d.setUsername(user.getUsername());
             }
         }

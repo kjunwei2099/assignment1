@@ -16,9 +16,10 @@ public class cRegisteredCustomer extends cUser{
     private String postcode;
     private String city;
     private String state;
-    
     private ArrayList<String> orderList;
     private ArrayList<String> itemList;
+    private ArrayList<String> categoryList;
+    private boolean isPaid = false;
     
     public cRegisteredCustomer(){}
     
@@ -26,16 +27,14 @@ public class cRegisteredCustomer extends cUser{
         super(username, password);
         ArrayList<String> userList = cFileHandling.readFile("userInfo.txt");
         for (String eachString : userList) {
-            Scanner sc = new Scanner(eachString).useDelimiter(";");
-            String tempRole = sc.next();
-            String tempUsername = sc.next();
-            String tempPassword = sc.next();
+            String[]fields = eachString.split(";");
+            String tempUsername = fields[1];
             if(tempUsername.equals(super.getUsername()))
             {
-                this.address = sc.next();
-                this.postcode = sc.next();
-                this.city = sc.next();
-                this.state = sc.next();
+                this.address = fields[3];
+                this.postcode = fields[4];
+                this.city = fields[5];
+                this.state = fields[6];
             }
         }
     }
@@ -103,33 +102,117 @@ public class cRegisteredCustomer extends cUser{
         this.orderList = cFileHandling.readFile("order.txt");
     }
     
-    public void loadItemList(){
-        this.orderList = cFileHandling.readFile("item.txt");
-    }
-    
     public ArrayList<String> getOrderList(){
         return orderList;
+    }
+    
+    public void loadItemList(){
+        this.itemList = cFileHandling.readFile("item.txt");
     }
     
     public ArrayList<String> getItemList(){
         return itemList;
     }
-//    
-//    public static ArrayList<String>loadShop(){
-//        ArrayList<String> itemList = cFileHandling.readFile("item.txt");
-//        return itemList;
-//    }
-//    
-//    public void ArrayList<String>loadCart(){
-//        ArrayList<String> orderList = cFileHandling.readFile("order.txt");
-//        for(String eachString: orderList){
-//            
-//        }
-//        return orderList;
-//    }
-//    
-//    public static ArrayList<String>loadHistory(){
-//        ArrayList<String> orderHistory = cFileHandling.readFile("order.txt");
-//        return orderHistory;
-//    }
+    
+    public void loadCategoryList(){
+        this.categoryList = cFileHandling.readFile("category.txt");
+    }
+
+    public ArrayList<String> getCategoryList(){
+         return categoryList;
+    }
+    
+    public void addCart(String item){
+        orderList.add(item);
+        cFileHandling f = new cFileHandling();
+        for(String eachString: orderList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("order.txt");
+    }
+    
+    public void editOrderQuantity(int i, String quantity, String total, String date){
+        cFileHandling f = new cFileHandling();;
+        String[]order = orderList.get(i).split(";");
+        orderList.set(i,order[0]+";"+date+";"+super.getUsername()+";"+order[4]+";"+order[5]+";"+quantity+";"+total+";"
+        +order[8]+";"+order[9]+";"+order[10]+";"+order[11]+";"+order[12]);
+        for(String eachString: orderList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("order.txt");
+    }
+    
+    public void editItemQuantity(String categoryID, String itemName, int quantity){
+        cFileHandling f = new cFileHandling();
+        for(int i=0;i<itemList.size();i++){
+            String[]fields = itemList.get(i).split(";");
+            if(fields[0].equals(categoryID)&&fields[1].equals(itemName))
+            {
+                itemList.set(i, fields[0]+";"+fields[1]+";"+fields[2]+";"+quantity);
+            }
+        }
+        for(String eachString: itemList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("item.txt");
+    }
+    
+    public void removeCart(int orderListIndex){
+        orderList.remove(orderListIndex);
+        cFileHandling f = new cFileHandling();
+        for(String eachString: orderList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("order.txt");
+    }
+    
+    public void pay(){
+        cFileHandling f = new cFileHandling();
+        cDate d = new cDate();
+        int tempID = 0;
+        for (int i=0; i<orderList.size();i++){
+            String[]order = orderList.get(i).split(";");
+            try 
+            {
+                tempID = Integer.parseInt(order[0]);
+            } 
+            catch (Exception e) 
+            {}
+            if(order[3].equals(super.getUsername())&&order[0].equals("null")&&order[8].equals("unpaid"))
+            {
+                int finalID = tempID + 1;
+                orderList.set(i,finalID+";"+d.getDate()+";"+super.getUsername()+";"+order[4]+";"+order[5]+";"+order[6]+";"
+                +order[7]+";paid;null;Packing Item;no;null");
+                this.isPaid = true;
+            }
+        }
+        for(String eachString: orderList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("order.txt");
+    }
+    
+    public boolean getIsPaid(){
+        return isPaid;
+    }
+    
+    public void setIsPaid(boolean isPaid){
+        this.isPaid = isPaid;
+    }
+    
+    public void addFeedback(String orderID, String feedback){
+        cFileHandling f = new cFileHandling();
+        for(int i=0; i<orderList.size(); i++){
+            String[]fields = orderList.get(i).split(";");
+            if(fields[0].equals(orderID))
+            {
+                orderList.set(i, fields[0]+";"+fields[1]+";"+fields[2]+";"+fields[3]+";"+fields[4]+";"+fields[5]+";"
+                +fields[6]+";"+fields[7]+";"+fields[8]+";"+fields[9]+";"+fields[10]+";yes;"+feedback); 
+            }
+        }
+        for(String eachString: orderList){
+            f.newList(eachString);
+        }
+        f.saveListToFile("order.txt");
+    }
 }
