@@ -241,7 +241,7 @@ public class jLogin extends javax.swing.JFrame {
                 d.setPassword(user.getPassword());
                 d.configuration();
             }
-            else if(user.getRole().equals("Delivery"))
+            else if(user.getRole().equals("Delivery Staff"))
             {
                 jDelivery d = new jDelivery();
                 d.setVisible(true);
